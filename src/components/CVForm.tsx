@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { LuBriefcaseBusiness, LuBrain } from "react-icons/lu";
 import { SlGraduation } from "react-icons/sl";
 import { FaPlus, FaRegTrashAlt } from "react-icons/fa";
-
+import { VscSettingsCompact } from "react-icons/vsc";
 import { HiLanguage } from "react-icons/hi2";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -27,6 +27,13 @@ import {
   setLanguages,
   setResume,
   setColor,
+  updateEducation,
+  removeEducationPoint,
+  updateEducationPoint,
+  addEducationPoint,
+  addExperiencePoint,
+  removeExperiencePoint,
+  updateExperiencePoint,
 } from "@/lib/features/resumeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
@@ -39,7 +46,6 @@ export default function CVForm() {
 
   const [hydrated, setHydrated] = useState(false);
   const {
-    certifications,
     education,
     experience,
     languages,
@@ -414,40 +420,113 @@ export default function CVForm() {
                 </button>
               </div>
               <div className="p-4 bg-white">
-                <div className="flex items-center border border-gray-400 rounded-md overflow-hidden">
+                {/* Add Language */}
+                <div className="flex w-full overflow-hidden border border-gray-300 rounded-lg focus-within:border-[#0D47A1] focus-within:ring-2 focus-within:ring-[#0D47A1]/10 transition-all">
                   <input
                     type="text"
-                    name="skillName"
-                    id="skillName"
-                    className="focus:outline-none flex-1 indent-2"
+                    name="languageName"
+                    id="languageName"
+                    placeholder="e.g. English, Arabic, French"
+                    className="
+        flex-1
+        min-w-0
+        px-3
+        py-2
+        text-sm
+        text-gray-800
+        placeholder:text-gray-400
+        outline-none
+      "
                     value={language.name}
                     onChange={(e) =>
-                      setLanguage((prev) => ({ ...prev, name: e.target.value }))
+                      setLanguage((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
                     }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && language.name.trim()) {
+                        createNewLanguage(language.name);
+                      }
+                    }}
                   />
+
                   <button
-                    className="flex gap-2 justify-center items-center text-nowrap bg-[#004AC6] text-white px-4 py-1"
-                    onClick={() => createNewLanguage(language?.name)}
+                    type="button"
+                    className="
+        px-5
+        py-2
+        bg-[#0D47A1]
+        hover:bg-[#093575]
+        text-white
+        text-sm
+        font-medium
+        transition-colors
+        cursor-pointer
+      "
+                    onClick={() => createNewLanguage(language.name)}
                   >
                     Add
                   </button>
                 </div>
-                <ul className="flex gap-3 justify-center flex-wrap my-4">
-                  {languages.map((lang) => (
-                    <li
-                      key={lang.id}
-                      className="bg-[#D3E4FE] text-[#222e37] px-2 py-0.5 rounded-md"
-                    >
-                      <span className="mr-1">{lang.name}</span>
-                      <button
-                        className="text-red-900 hover:text-red-500 cursor-pointer transition-all"
-                        onClick={() => dispatch(removeLanguage(lang.id))}
-                      >
-                        <FaRegTrashAlt size={12} />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+
+                {/* Languages */}
+                {languages.length > 0 ? (
+                  <div className="mt-4">
+                    <p className="mb-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      Added languages
+                    </p>
+
+                    <ul className="flex flex-wrap gap-2">
+                      {languages.map((lang) => (
+                        <li
+                          key={lang.id}
+                          className="
+              inline-flex
+              items-center
+              gap-1.5
+              px-3
+              py-1.5
+              bg-[#E8F0FE]
+              text-[#173B69]
+              border border-[#C7DAFA]
+              rounded-full
+              text-sm
+              font-medium
+              hover:bg-[#DCEAFF]
+              transition-colors
+            "
+                        >
+                          <span>{lang.name}</span>
+
+                          <button
+                            type="button"
+                            className="
+                flex
+                items-center
+                justify-center
+                w-5
+                h-5
+                rounded-full
+                text-gray-400
+                hover:text-red-500
+                hover:bg-red-50
+                transition-colors
+                cursor-pointer
+              "
+                            onClick={() => dispatch(removeLanguage(lang.id))}
+                          >
+                            <FaRegTrashAlt size={11} />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <p className="mt-4 text-center text-sm text-gray-400">
+                    Add the languages you speak
+                  </p>
+                )}
               </div>
             </div>
             <div
@@ -466,40 +545,113 @@ export default function CVForm() {
                 </button>
               </div>
               <div className="p-4 bg-white">
-                <div className="flex items-center border border-gray-400 rounded-md overflow-hidden">
+                {/* Add Skill */}
+                <div className="flex w-full overflow-hidden border border-gray-300 rounded-lg focus-within:border-[#0D47A1] focus-within:ring-2 focus-within:ring-[#0D47A1]/10 transition-all">
                   <input
                     type="text"
                     name="skillName"
                     id="skillName"
-                    className="focus:outline-none flex-1 indent-2"
+                    placeholder="e.g. React, TypeScript, Next.js"
+                    className="
+        flex-1
+        min-w-0
+        px-3
+        py-2
+        text-sm
+        text-gray-800
+        placeholder:text-gray-400
+        outline-none
+      "
                     value={skill.name}
                     onChange={(e) =>
-                      setSkill((prev) => ({ ...prev, name: e.target.value }))
+                      setSkill((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
                     }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && skill.name.trim()) {
+                        createNewSkill(skill.name);
+                      }
+                    }}
                   />
+
                   <button
-                    className="flex gap-2 justify-center items-center text-nowrap bg-[#004AC6] text-white px-4 py-1"
-                    onClick={() => createNewSkill(skill?.name)}
+                    type="button"
+                    className="
+        px-5
+        py-2
+        bg-[#0D47A1]
+        hover:bg-[#093575]
+        text-white
+        text-sm
+        font-medium
+        transition-colors
+        cursor-pointer
+      "
+                    onClick={() => createNewSkill(skill.name)}
                   >
                     Add
                   </button>
                 </div>
-                <ul className="flex gap-3 justify-center flex-wrap my-4">
-                  {skills.map((skill) => (
-                    <li
-                      key={skill.id}
-                      className="bg-[#D3E4FE] text-[#222e37] px-2 py-0.5 rounded-md"
-                    >
-                      <span className="mr-1">{skill.name}</span>
-                      <button
-                        className="text-red-900 hover:text-red-500 cursor-pointer transition-all"
-                        onClick={() => dispatch(removeSkill(skill.id))}
-                      >
-                        <FaRegTrashAlt size={12} />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+
+                {/* Skills */}
+                {skills.length > 0 ? (
+                  <div className="mt-4">
+                    <p className="mb-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      Added skills
+                    </p>
+
+                    <ul className="flex flex-wrap gap-2">
+                      {skills.map((skill) => (
+                        <li
+                          key={skill.id}
+                          className="
+                            inline-flex
+                            items-center
+                            gap-1.5
+                            px-3
+                            py-1.5
+                            bg-[#E8F0FE]
+                            text-[#173B69]
+                            border border-[#C7DAFA]
+                            rounded-full
+                            text-sm
+                            font-medium
+                            hover:bg-[#DCEAFF]
+                            transition-colors
+            "
+                        >
+                          <span>{skill.name}</span>
+
+                          <button
+                            type="button"
+                            className="
+                flex
+                items-center
+                justify-center
+                w-5
+                h-5
+                rounded-full
+                text-gray-400
+                hover:text-red-500
+                hover:bg-red-50
+                transition-colors
+                cursor-pointer
+              "
+                            onClick={() => dispatch(removeSkill(skill.id))}
+                          >
+                            <FaRegTrashAlt size={11} />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <p className="mt-4 text-center text-sm text-gray-400">
+                    Add your technical skills above
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -517,12 +669,12 @@ function EducationJSX({
   inputClasses: string;
 }) {
   const dispatch = useDispatch();
+
   return (
-    <div
-      key={edu.id}
-      className="relative mb-4 bg-[#edf0f9a7] p-4 border border-gray-300 rounded-sm"
-    >
+    <div className="relative mb-4 bg-[#edf0f9a7] p-4 border border-gray-300 rounded-sm">
+      {/* Delete Education */}
       <button
+        type="button"
         className="absolute right-3 top-3 text-red-600 cursor-pointer"
         onClick={() => {
           dispatch(removeEducation(edu.id));
@@ -530,25 +682,167 @@ function EducationJSX({
       >
         <FaRegTrashAlt size={16} />
       </button>
+
+      {/* Degree */}
       <div>
-        <label className="font-semibold text-sm" htmlFor="jobTitle">
-          Job Title
+        <label className="font-semibold text-sm" htmlFor={`degree-${edu.id}`}>
+          Degree
         </label>
-        <input type="text" className={inputClasses} id="jobTitle" />
+
+        <input
+          type="text"
+          className={inputClasses}
+          id={`degree-${edu.id}`}
+          value={edu.degree}
+          onChange={(e) =>
+            dispatch(
+              updateEducation({
+                id: edu.id,
+                field: "degree",
+                value: e.target.value,
+              }),
+            )
+          }
+        />
       </div>
-      <div className="flex gap-4 mt-4">
-        <div>
-          <label className="font-semibold text-sm" htmlFor="company">
-            Company
+
+      {/* Institution + Dates */}
+      <div className="mt-4 flex gap-4">
+        {/* Institution */}
+        <div className="flex-1">
+          <label
+            className="text-sm font-semibold"
+            htmlFor={`institution-${edu.id}`}
+          >
+            Institution
           </label>
-          <input type="text" className={inputClasses} id="company" />
+
+          <input
+            type="text"
+            className={inputClasses}
+            id={`institution-${edu.id}`}
+            value={edu.institution}
+            onChange={(e) =>
+              dispatch(
+                updateEducation({
+                  id: edu.id,
+                  field: "institution",
+                  value: e.target.value,
+                }),
+              )
+            }
+          />
         </div>
-        <div>
-          <label className="font-semibold text-sm" htmlFor="period">
-            Period
+
+        {/* Start Date */}
+        <div className="flex-1">
+          <label
+            className="text-sm font-semibold"
+            htmlFor={`education-start-${edu.id}`}
+          >
+            Start Date
           </label>
-          <input type="text" className={inputClasses} id="period" />
+
+          <input
+            type="text"
+            className={inputClasses}
+            id={`education-start-${edu.id}`}
+            value={edu.startDate}
+            onChange={(e) =>
+              dispatch(
+                updateEducation({
+                  id: edu.id,
+                  field: "startDate",
+                  value: e.target.value,
+                }),
+              )
+            }
+          />
         </div>
+
+        {/* End Date */}
+        <div className="flex-1">
+          <label
+            className="text-sm font-semibold"
+            htmlFor={`education-end-${edu.id}`}
+          >
+            End Date
+          </label>
+
+          <input
+            type="text"
+            className={inputClasses}
+            id={`education-end-${edu.id}`}
+            value={edu.endDate}
+            onChange={(e) =>
+              dispatch(
+                updateEducation({
+                  id: edu.id,
+                  field: "endDate",
+                  value: e.target.value,
+                }),
+              )
+            }
+          />
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="mt-5">
+        <label className="text-sm font-semibold">Description</label>
+
+        <div className="mt-2 space-y-2">
+          {edu.points.map((point, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <input
+                type="text"
+                className={inputClasses}
+                placeholder="e.g. Graduated with honors..."
+                value={point}
+                onChange={(e) =>
+                  dispatch(
+                    updateEducationPoint({
+                      id: edu.id,
+                      pointIndex: index,
+                      value: e.target.value,
+                    }),
+                  )
+                }
+              />
+
+              <button
+                type="button"
+                className="shrink-0 text-red-600 hover:text-red-700"
+                onClick={() =>
+                  dispatch(
+                    removeEducationPoint({
+                      id: edu.id,
+                      pointIndex: index,
+                    }),
+                  )
+                }
+              >
+                <FaRegTrashAlt size={15} />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Add Description */}
+        <button
+          type="button"
+          className="mt-3 text-sm font-semibold text-[#0D47A1] hover:underline"
+          onClick={() =>
+            dispatch(
+              addEducationPoint({
+                id: edu.id,
+                point: "",
+              }),
+            )
+          }
+        >
+          + Add description
+        </button>
       </div>
     </div>
   );
@@ -575,7 +869,6 @@ function ExperienceJSX({
       >
         <FaRegTrashAlt size={16} />
       </button>
-
       <div>
         <label className="text-sm font-semibold" htmlFor={`jobTitle-${exp.id}`}>
           Job Title
@@ -597,7 +890,6 @@ function ExperienceJSX({
           }
         />
       </div>
-
       <div className="mt-4 flex gap-4">
         <div>
           <label
@@ -673,6 +965,63 @@ function ExperienceJSX({
             }
           />
         </div>
+      </div>{" "}
+      {/* Description */}
+      <div className="mt-5">
+        <label className="text-sm font-semibold">Description</label>
+
+        <div className="mt-2 space-y-2">
+          {exp.points.map((point, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <input
+                type="text"
+                className={inputClasses}
+                placeholder="e.g. Graduated with honors..."
+                value={point}
+                onChange={(e) =>
+                  dispatch(
+                    updateExperiencePoint({
+                      id: exp.id,
+                      pointIndex: index,
+                      value: e.target.value,
+                    }),
+                  )
+                }
+              />
+
+              <button
+                type="button"
+                className="shrink-0 text-red-600 hover:text-red-700"
+                onClick={() =>
+                  dispatch(
+                    removeExperiencePoint({
+                      id: exp.id,
+                      pointIndex: index,
+                    }),
+                  )
+                }
+              >
+                <FaRegTrashAlt size={15} />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Add Description */}
+        <button
+          type="button"
+          className="mt-3 text-sm font-semibold text-[#0D47A1] hover:underline"
+          onClick={() =>
+            dispatch(
+              addExperiencePoint({
+                id: exp.id,
+                point: "",
+              }),
+            )
+          }
+        >
+          + Add description
+        </button>
       </div>
     </div>
   );
@@ -686,16 +1035,8 @@ function Progress({
   color: string;
 }) {
   const dispatch = useDispatch();
-  const colors = [
-    "#0D47A1",
-    "#1565C0",
-    "#2E7D32",
-    "#6A1B9A",
-    "#C62828",
-    "#EF6C00",
-    "#00838F",
-    "#8055a2",
-  ];
+  const [custom, setCustom] = useState<string>("#8055a2");
+  const colors = ["#1d1d1d", "#1F3864", "#333333", "#374151", "#7C3AED"];
   return (
     <div className="p-8 shadow shadow-gray-300">
       <h2 className="text-3xl font-semibold">Edit Details</h2>
@@ -726,6 +1067,27 @@ function Progress({
             }}
           />
         ))}
+        <label
+          htmlFor="color"
+          className="relative overflow-hidden size-8 rounded-full "
+        >
+          <VscSettingsCompact className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 text-white bg-black/50 w-full h-full rounded-full p-1 opacity-0 hover:opacity-100 cursor-pointer" />
+          <input
+            key={color}
+            type="color"
+            id="color"
+            onChange={(e) => {
+              const value = e.target.value;
+              setCustom(value);
+              dispatch(setColor(value));
+            }}
+            value={custom}
+            className="size-8 rounded-full border-2"
+            style={{
+              backgroundColor: color,
+            }}
+          />{" "}
+        </label>
       </div>
     </div>
   );

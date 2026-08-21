@@ -55,7 +55,6 @@ export default function Builder() {
     pdf.save("CV.pdf");
   };
 
-
   return (
     <main className="flex h-dvh">
       {/* Form */}
@@ -166,7 +165,10 @@ export default function Builder() {
 
       {/* Preview */}
       <section className="bg-[#E5EEFF] flex-3 h-full flex justify-center items-center overflow-auto">
-        <div ref={ref} className="w-198.5 h-[1123px] bg-white origin-top">
+        <div
+          ref={ref}
+          className="w-198.5 h-280.75 bg-white origin-top font-inter"
+        >
           <Simple />
         </div>
       </section>

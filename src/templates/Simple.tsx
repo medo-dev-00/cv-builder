@@ -7,14 +7,14 @@ export default function Simple() {
   const resumeData = useSelector((state: RootState) => state.resume);
   const color = useSelector((state: RootState) => state.resume.color);
   return (
-    <div className="w-full p-10 template">
+    <div className="w-full p-10">
       <h2
-        className="text-[28px] font-bold uppercase mb-2 text-center"
+        className="text-[36px] font-bold uppercase mb-2 text-center"
         style={{ color }}
       >
         {resumeData.personalInfo.fullName}
       </h2>
-      <div className="text-center">
+      <div className="text-center font-medium">
         <div className="flex gap-2 justify-center items-center text-[#1e1e1e]">
           <span>{resumeData.personalInfo.address}</span>
           {resumeData.personalInfo.address.length > 1 &&
@@ -84,15 +84,15 @@ export default function Simple() {
                   {exp.jobTitle}, {exp.company}
                 </h3>
                 <p>
-                  {exp.startDate} -
+                  {exp.startDate} {exp.startDate && exp.endDate && "- "}
                   {exp.endDate !== "" ? exp.endDate : "Present"}
                 </p>
               </div>
 
               <ul className="pl-8 my-2">
-                {exp.points.map((desc) => {
+                {exp.points.map((desc, index) => {
                   return (
-                    <li key={desc} className="list-disc text-[15.2px]">
+                    <li key={index} className="list-disc text-[15.2px]">
                       {desc}
                     </li>
                   );
@@ -125,9 +125,9 @@ export default function Simple() {
               </div>
               <h4>{edu.institution}</h4>
               <ul className="pl-8 my-2">
-                {edu.points.map((desc) => {
+                {edu.points.map((desc, index) => {
                   return (
-                    <li key={desc} className="list-disc text-[15.2px]">
+                    <li key={index} className="list-disc text-[15.2px]">
                       {desc}
                     </li>
                   );

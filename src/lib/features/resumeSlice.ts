@@ -93,7 +93,98 @@ const resumeSlice = createSlice({
     addEducation: (state, action: PayloadAction<Education>) => {
       state.education.push(action.payload);
     },
+    addEducationPoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        point: string;
+      }>,
+    ) => {
+      const education = state.education.find(
+        (edu) => edu.id === action.payload.id,
+      );
+      if (education) {
+        education.points.push(action.payload.point);
+      }
+    },
+    updateEducationPoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        pointIndex: number;
+        value: string;
+      }>,
+    ) => {
+      const education = state.education.find(
+        (edu) => edu.id === action.payload.id,
+      );
 
+      if (education) {
+        education.points[action.payload.pointIndex] = action.payload.value;
+      }
+    },
+
+    removeEducationPoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        pointIndex: number;
+      }>,
+    ) => {
+      const education = state.education.find(
+        (edu) => edu.id === action.payload.id,
+      );
+
+      if (education) {
+        education.points.splice(action.payload.pointIndex, 1);
+      }
+    },
+    addExperiencePoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        point: string;
+      }>,
+    ) => {
+      const experience = state.experience.find(
+        (exp) => exp.id === action.payload.id,
+      );
+      if (experience) {
+        experience.points.push(action.payload.point);
+      }
+    },
+    updateExperiencePoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        pointIndex: number;
+        value: string;
+      }>,
+    ) => {
+      const experience = state.experience.find(
+        (exp) => exp.id === action.payload.id,
+      );
+
+      if (experience) {
+        experience.points[action.payload.pointIndex] = action.payload.value;
+      }
+    },
+
+    removeExperiencePoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        pointIndex: number;
+      }>,
+    ) => {
+      const experience = state.experience.find(
+        (exp) => exp.id === action.payload.id,
+      );
+
+      if (experience) {
+        experience.points.splice(action.payload.pointIndex, 1);
+      }
+    },
     setSkills: (state, action: PayloadAction<Single>) => {
       state.skills.push(action.payload);
     },
@@ -181,6 +272,14 @@ export const {
   removeLanguage,
   setResume,
   setColor,
+  updateEducation,
+  addEducationPoint,
+  removeCertificate,
+  removeEducationPoint,
+  updateEducationPoint,
+  addExperiencePoint,
+  removeExperiencePoint,
+  updateExperiencePoint,
 } = resumeSlice.actions;
 
 export default resumeSlice.reducer;
