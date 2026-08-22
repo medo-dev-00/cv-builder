@@ -18,6 +18,8 @@ export interface Experience {
   endDate: string;
   points: string[];
 }
+
+export type TemplateType = "simple" | "minimalist";
 export type ResumeState = {
   color: string;
 
@@ -41,6 +43,7 @@ export type ResumeState = {
   languages: Single[];
 
   certifications: Single[];
+  template: TemplateType;
 };
 
 export type Single = {
@@ -54,6 +57,7 @@ const initialState: ResumeState = {
   color: "#8055a2",
   personalInfo: {
     fullName: "",
+    job: "",
     email: "",
     phone: "",
     address: "",
@@ -71,6 +75,7 @@ const initialState: ResumeState = {
   languages: [],
 
   certifications: [],
+  template: "simple",
 };
 
 const resumeSlice = createSlice({
@@ -84,6 +89,9 @@ const resumeSlice = createSlice({
     // Bulk replace — used when hydrating from localStorage
     setResume: (state, action: PayloadAction<ResumeState>) => {
       return action.payload;
+    },
+    setTemplate: (state, action: PayloadAction<TemplateType>) => {
+      state.template = action.payload;
     },
     updatePersonalInfo: (
       state,
@@ -290,6 +298,7 @@ export const {
   addExperiencePoint,
   removeExperiencePoint,
   updateExperiencePoint,
+  setTemplate,
 } = resumeSlice.actions;
 
 export default resumeSlice.reducer;

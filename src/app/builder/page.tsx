@@ -1,53 +1,31 @@
 "use client";
 
-import { jsPDF } from "jspdf";
+import { useRef } from "react";
 
-import { useRef, useState } from "react";
-
-import { FaChevronDown, FaFileDownload } from "react-icons/fa";
-
-import { toPng } from "html-to-image";
+import { FaFileDownload } from "react-icons/fa";
 
 import CVForm from "@/components/CVForm";
 
 import Simple from "@/templates/Simple";
-
-// --- Constants ---
-
-type Quality = "low" | "medium" | "large";
-
-// pixelRatio controls html-to-image capture sharpness (higher = larger file)
-
-const qualitySettings = {
-  low: {
-    label: "Low",
-
-    pixelRatio: 2,
-  },
-
-  medium: {
-    label: "Medium",
-
-    pixelRatio: 4,
-  },
-
-  large: {
-    label: "Large",
-
-    pixelRatio: 6,
-  },
-};
+import Minimalist from "@/templates/Minimalist";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { TemplateType } from "@/lib/features/resumeSlice";
+import BuilderHeader from "@/components/BuilderHeader";
 
 // Builder page — form editor, live preview, and PDF export
 
 export default function Builder() {
-  // State
+  const resumeData = useSelector((state: RootState) => state.resume);
 
-  const [quality, setQuality] = useState<Quality>("medium");
+  const fullName = resumeData.personalInfo.fullName
+    .split(" ")
+    .join("")
+    .toLowerCase();
 
-  const [open, setOpen] = useState(false);
-
-  // Attached to the preview container for PDF rasterization
+  const template: TemplateType = resumeData.template;
+  const templates = { simple: Simple, minimalist: Minimalist };
+  const Template = templates[template];
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -60,31 +38,81 @@ export default function Builder() {
 
     if (!element) return;
 
-    // Snapshot the preview DOM; quality tier sets capture resolution
+    try {
+      // Get Tailwind/global styles from the current page
+      const styles = Array.from(document.styleSheets)
+        .flatMap((sheet) => {
+          try {
+            return Array.from(sheet.cssRules).map((rule) => rule.cssText);
+          } catch {
+            return [];
+          }
+        })
+        .join("\n");
 
-    const dataUrl = await toPng(element, {
-      pixelRatio: qualitySettings[quality].pixelRatio,
+      const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8" />
 
-      backgroundColor: "#ffffff",
+              <style>
+                ${styles}
 
-      cacheBust: true,
-    });
+                @page {
+                  size: A4;
+                  margin: 0;
+                }
 
-    const pdf = new jsPDF({
-      orientation: "portrait",
+                html,
+                body {
+                  margin: 0;
+                  padding: 0;
+                  background: white;
+                }
 
-      unit: "mm",
+                * {
+                  box-sizing: border-box;
+                }
+              </style>
+            </head>
 
-      format: "a4",
+            <body>
+              ${element.outerHTML}
+            </body>
+            </html>
+            `;
 
-      compress: true,
-    });
+      const response = await fetch("/api/generate-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ html }),
+      });
 
-    // 210 × 297 mm matches A4; image spans the full page
+      if (!response.ok) {
+        const error = await response.json();
 
-    pdf.addImage(dataUrl, "PNG", 0, 0, 210, 297, undefined, "FAST");
+        throw new Error(error.error || "Failed to generate PDF");
+      }
 
-    pdf.save("CV.pdf");
+      const blob = await response.blob();
+
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${fullName}-cv.pdf`;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+    }
   };
 
   // Render — two-column layout: editable form (left) and live preview (right)
@@ -103,62 +131,14 @@ export default function Builder() {
         <div className="ml-auto border-t border-gray-200 p-4">
           {/* Split button: download action + quality picker toggle */}
 
-          <div className="relative inline-flex items-center rounded-lg border border-gray-300 bg-white text-[#0D47A1] shadow-sm">
-            {/* Download */}
-
-            <button
-              type="button"
-              onClick={handleDownloadPDF}
-              className="inline-flex items-center justify-center gap-2 rounded-l-lg px-4 py-2.5 text-sm font-medium hover:bg-gray-50 focus:outline-none"
-            >
-              <FaFileDownload />
-              Download PDF
-            </button>
-
-            {/* Dropdown button */}
-
-            <button
-              type="button"
-              onClick={() => setOpen((prev) => !prev)}
-              className="inline-flex items-center justify-center rounded-r-lg border-l border-gray-300 px-3 py-2.5 hover:bg-gray-50 focus:outline-none"
-            >
-              <FaChevronDown
-                className={`h-3 w-3 transition-transform ${
-                  open ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {/* Quality options — selecting one updates export resolution and closes menu */}
-
-            {/* Dropdown */}
-
-            {open && (
-              <div className="absolute bottom-full right-0 z-50 mb-2 w-44 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
-                <ul className="p-2 text-sm font-medium text-gray-700">
-                  {(Object.keys(qualitySettings) as Quality[]).map((item) => (
-                    <li key={item}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setQuality(item);
-
-                          setOpen(false);
-                        }}
-                        className={`flex w-full items-center rounded-md px-3 py-2 hover:bg-gray-100 ${
-                          quality === item ? "bg-blue-50 text-[#0D47A1]" : ""
-                        }`}
-                      >
-                        {qualitySettings[item].label}
-
-                        {quality === item && <span className="ml-auto">✓</span>}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+          <button
+            type="button"
+            onClick={handleDownloadPDF}
+            className="relative inline-flex items-center rounded-lg border border-gray-300 bg-white text-[#0D47A1] shadow-sm px-4 py-2 gap-2"
+          >
+            <FaFileDownload />
+            Download PDF
+          </button>
         </div>
       </section>
 
@@ -166,12 +146,15 @@ export default function Builder() {
 
       {/* A4-sized canvas; ref here is the PDF capture target */}
 
-      <section className="flex h-full flex-3 items-center justify-center overflow-auto bg-[#E5EEFF]">
-        <div
-          ref={ref}
-          className="h-280.75 w-198.5 origin-top bg-white font-inter"
-        >
-          <Simple />
+      <section className="h-full flex-3 overflow-auto bg-[#E5EEFF]">
+        <BuilderHeader />
+        <div className="flex justify-center  mt-10 ">
+          <div
+            ref={ref}
+            className="h-280.75 w-198.5 origin-top bg-white font-inter"
+          >
+            <Template />
+          </div>
         </div>
       </section>
     </main>

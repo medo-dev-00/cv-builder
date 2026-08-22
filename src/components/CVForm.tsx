@@ -245,74 +245,83 @@ export default function CVForm() {
                   }}
                 />
               </div>
-
-              <div className="my-2 flex flex-wrap gap-2">
-                <div className="flex-1 basis-72">
-                  <label className="text-sm font-semibold" htmlFor="address">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    name="address"
-                    id="address"
-                    className={inputClasses}
-                    value={personalInfo.address}
-                    onChange={(e) => {
-                      dispatch(updatePersonalInfo({ address: e.target.value }));
-                    }}
-                  />
-                </div>
-                <div className="flex-1 basis-72">
-                  <label
-                    className="text-sm font-semibold"
-                    htmlFor="phoneNumber"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    id="phoneNumber"
-                    className={inputClasses}
-                    inputMode="numeric"
-                    value={personalInfo.phone}
-                    onChange={(e) => {
-                      dispatch(updatePersonalInfo({ phone: e.target.value }));
-                    }}
-                  />
-                </div>
+              <div className="flex-1 basis-72 mt-2">
+                <label className="text-sm font-semibold" htmlFor="website">
+                  Job Title
+                </label>
+                <input
+                  type="text"
+                  name="job"
+                  id="job"
+                  className={inputClasses}
+                  value={personalInfo.job}
+                  onChange={(e) => {
+                    dispatch(updatePersonalInfo({ job: e.target.value }));
+                  }}
+                />
               </div>
-              <div className="flex w-full flex-wrap gap-2">
-                <div className="flex-1 basis-72">
-                  <label className="text-sm font-semibold" htmlFor="email">
-                    Email
-                  </label>
-                  <input
-                    type="text"
-                    name="email"
-                    id="email"
-                    className={inputClasses}
-                    value={personalInfo.email}
-                    onChange={(e) => {
-                      dispatch(updatePersonalInfo({ email: e.target.value }));
-                    }}
-                  />
-                </div>
-                <div className="flex-1 basis-72">
-                  <label className="text-sm font-semibold" htmlFor="website">
-                    Website
-                  </label>
-                  <input
-                    type="text"
-                    name="website"
-                    id="website"
-                    className={inputClasses}
-                    value={personalInfo.website}
-                    onChange={(e) => {
-                      dispatch(updatePersonalInfo({ website: e.target.value }));
-                    }}
-                  />
-                </div>
+
+              <div className="flex-1 basis-72 my-2">
+                <label className="text-sm font-semibold" htmlFor="address">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  name="address"
+                  id="address"
+                  className={inputClasses}
+                  value={personalInfo.address}
+                  onChange={(e) => {
+                    dispatch(updatePersonalInfo({ address: e.target.value }));
+                  }}
+                />
+              </div>
+              <div className="flex-1 basis-72 my-2">
+                <label className="text-sm font-semibold" htmlFor="phoneNumber">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  id="phoneNumber"
+                  className={inputClasses}
+                  inputMode="numeric"
+                  value={personalInfo.phone}
+                  onChange={(e) => {
+                    dispatch(updatePersonalInfo({ phone: e.target.value }));
+                  }}
+                />
+              </div>
+
+              <div className="flex-1 basis-72 my-2">
+                <label className="text-sm font-semibold" htmlFor="email">
+                  Email
+                </label>
+                <input
+                  type="text"
+                  name="email"
+                  id="email"
+                  className={inputClasses}
+                  value={personalInfo.email}
+                  onChange={(e) => {
+                    dispatch(updatePersonalInfo({ email: e.target.value }));
+                  }}
+                />
+              </div>
+              <div className="flex-1 basis-72">
+                <label className="text-sm font-semibold" htmlFor="website">
+                  Website
+                </label>
+                <input
+                  type="text"
+                  name="website"
+                  id="website"
+                  className={inputClasses}
+                  value={personalInfo.website}
+                  onChange={(e) => {
+                    dispatch(updatePersonalInfo({ website: e.target.value }));
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -987,33 +996,50 @@ function Progress({
             key={item}
             type="button"
             onClick={() => dispatch(setColor(item))}
-            className={`size-8 rounded-full border-2 ${
-              color === item ? "border-slate-700" : "border-transparent"
+            className={`size-8 rounded-full border-2 shadow-xl shadow-blue-500/25 ${
+              color === item
+                ? "border-slate-700 -translate-y-0.5"
+                : "border-transparent shadow-transparent"
             }`}
             style={{
               backgroundColor: item,
             }}
           />
         ))}
-        <label htmlFor="color" className="relative overflow-hidden size-fit ">
-          <VscSettingsCompact className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 rotate-90 rounded-full bg-black/50 p-1 text-white opacity-0 hover:opacity-100 cursor-pointer" />
+        <label
+          htmlFor="color"
+          className="group relative block size-8 cursor-pointer overflow-hidden rounded-full"
+          style={{ backgroundColor: custom }}
+        >
+          <VscSettingsCompact
+            className="
+      absolute
+      inset-0
+      m-auto
+      size-full
+      rounded-full
+      bg-black/50
+      p-1
+      text-white
+      opacity-0
+      transition-opacity
+      duration-200
+      group-hover:opacity-100
+    "
+          />
+
           <input
-            key={color}
             type="color"
             id="color"
+            value={custom}
             onChange={(e) => {
               const value = e.target.value;
+
               setCustom(value);
               dispatch(setColor(value));
             }}
-            value={custom}
-            className={`size-8 rounded-full border-2 ${
-              color === custom ? "border-slate-700" : "border-transparent"
-            }`}
-            style={{
-              backgroundColor: custom,
-            }}
-          />{" "}
+            className="absolute inset-0 cursor-pointer opacity-0"
+          />
         </label>
       </div>
     </div>
