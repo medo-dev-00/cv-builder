@@ -9,6 +9,7 @@ export interface Education {
   startDate: string;
   endDate: string;
   points: string[];
+  gpa?: string;
 }
 export interface Experience {
   id: string;
@@ -19,7 +20,7 @@ export interface Experience {
   points: string[];
 }
 
-export type TemplateType = "simple" | "minimalist";
+export type TemplateType = "simple" | "minimalist" | "classicOne";
 export type ResumeState = {
   color: string;
 

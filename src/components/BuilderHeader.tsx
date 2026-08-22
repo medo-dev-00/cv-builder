@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 const templates = [
   { id: "simple", label: "Simple" },
   { id: "minimalist", label: "Minimalist" },
+  { id: "classicOne", label: "ClassicOne" },
 ] as const;
 
 export default function BuilderHeader() {

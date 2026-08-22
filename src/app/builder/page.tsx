@@ -8,6 +8,8 @@ import CVForm from "@/components/CVForm";
 
 import Simple from "@/templates/Simple";
 import Minimalist from "@/templates/Minimalist";
+import ClassicOne from "@/templates/ClassicOne";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { TemplateType } from "@/lib/features/resumeSlice";
@@ -24,7 +26,11 @@ export default function Builder() {
     .toLowerCase();
 
   const template: TemplateType = resumeData.template;
-  const templates = { simple: Simple, minimalist: Minimalist };
+  const templates = {
+    simple: Simple,
+    minimalist: Minimalist,
+    classicOne: ClassicOne,
+  };
   const Template = templates[template];
 
   const ref = useRef<HTMLDivElement>(null);

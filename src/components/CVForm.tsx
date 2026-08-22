@@ -635,33 +635,34 @@ function EducationJSX({
       </div>
 
       {/* Institution + Dates */}
-      <div className="mt-4 flex gap-4">
-        {/* Institution */}
-        <div className="flex-1">
-          <label
-            className="text-sm font-semibold"
-            htmlFor={`institution-${edu.id}`}
-          >
-            Institution
-          </label>
 
-          <input
-            type="text"
-            className={inputClasses}
-            id={`institution-${edu.id}`}
-            value={edu.institution}
-            onChange={(e) =>
-              dispatch(
-                updateEducation({
-                  id: edu.id,
-                  field: "institution",
-                  value: e.target.value,
-                }),
-              )
-            }
-          />
-        </div>
+      {/* Institution */}
+      <div className="flex-1">
+        <label
+          className="text-sm font-semibold"
+          htmlFor={`institution-${edu.id}`}
+        >
+          Institution
+        </label>
 
+        <input
+          type="text"
+          className={inputClasses}
+          id={`institution-${edu.id}`}
+          value={edu.institution}
+          onChange={(e) =>
+            dispatch(
+              updateEducation({
+                id: edu.id,
+                field: "institution",
+                value: e.target.value,
+              }),
+            )
+          }
+        />
+      </div>
+
+      <div className="flex gap-4 my-2">
         {/* Start Date */}
         <div className="flex-1">
           <label
@@ -687,7 +688,6 @@ function EducationJSX({
             }
           />
         </div>
-
         {/* End Date */}
         <div className="flex-1">
           <label
@@ -713,6 +713,30 @@ function EducationJSX({
             }
           />
         </div>
+      </div>
+      <div className="flex-1">
+        <label
+          className="text-sm font-semibold"
+          htmlFor={`education-start-${edu.id}`}
+        >
+          GPA
+        </label>
+
+        <input
+          type="text"
+          className={inputClasses}
+          id={`education-gpa-${edu.id}`}
+          value={edu.gpa}
+          onChange={(e) =>
+            dispatch(
+              updateEducation({
+                id: edu.id,
+                field: "gpa",
+                value: e.target.value,
+              }),
+            )
+          }
+        />
       </div>
 
       {/* Description */}
