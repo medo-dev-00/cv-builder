@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// --- Types ---
+
 export interface Education {
   id: string;
   degree: string;
@@ -21,6 +23,7 @@ export type ResumeState = {
 
   personalInfo: {
     fullName: string;
+    job?: string;
     email: string;
     phone: string;
     address: string;
@@ -44,6 +47,9 @@ export type Single = {
   id: string;
   name: string;
 };
+
+// --- Initial state ---
+
 const initialState: ResumeState = {
   color: "#8055a2",
   personalInfo: {
@@ -71,9 +77,11 @@ const resumeSlice = createSlice({
   name: "resume",
   initialState,
   reducers: {
+    // Theme
     setColor: (state, action: PayloadAction<Partial<ResumeState["color"]>>) => {
       state.color = action.payload;
     },
+    // Bulk replace — used when hydrating from localStorage
     setResume: (state, action: PayloadAction<ResumeState>) => {
       return action.payload;
     },
@@ -87,6 +95,7 @@ const resumeSlice = createSlice({
       };
     },
 
+    // Experience
     addExperience: (state, action: PayloadAction<Experience>) => {
       state.experience.push(action.payload);
     },
@@ -185,6 +194,7 @@ const resumeSlice = createSlice({
         experience.points.splice(action.payload.pointIndex, 1);
       }
     },
+    // List items (skills, languages, certifications)
     setSkills: (state, action: PayloadAction<Single>) => {
       state.skills.push(action.payload);
     },

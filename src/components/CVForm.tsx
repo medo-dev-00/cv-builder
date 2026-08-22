@@ -38,8 +38,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 
-// Types and Interfaces
-
+// Resume data entry form — dispatches Redux updates and persists to localStorage
 export default function CVForm() {
   const state = useSelector((state: RootState) => state.resume);
   const dispatch = useDispatch();
@@ -54,7 +53,9 @@ export default function CVForm() {
     summary,
     color,
   } = state;
-  // Add New Education Field
+
+  // Handlers
+
   function createNewEducation() {
     dispatch(
       addEducation({
@@ -68,7 +69,6 @@ export default function CVForm() {
     );
   }
 
-  // Add New Experience Field
   function createNewExperience() {
     dispatch(
       addExperience({
@@ -82,35 +82,40 @@ export default function CVForm() {
     );
   }
 
-  // Add New Skill
   function createNewSkill(skill: string) {
     if (skill.length > 2) {
       dispatch(setSkills({ id: uuidv4(), name: skill }));
       setSkill({ id: uuidv4(), name: "" });
     }
   }
-  // Add New Skill
+
   function createNewLanguage(lang: string) {
     dispatch(setLanguages({ id: uuidv4(), name: lang }));
     setLanguage({ id: uuidv4(), name: "" });
   }
+
+  // Constants
+
   const inputClasses =
-    "border border-gray-300 mt-0.5 bg-gray-50/99 rounded-sm block w-full focus:outline-none p-1.5 indent-2 focus:border-[#0D47A1] transition-all";
+    "block w-full mt-0.5 p-1.5 indent-2 border border-gray-300 rounded-sm bg-gray-50/99 transition-all focus:outline-none focus:border-[#0D47A1]";
   const [progress, setProgress] = useState<number>(0);
 
+  // Completion score mapped to a 0–100 percentage (max progress = 320)
   const percentage = (progress * 100) / 320;
 
-  // UI States
+  // State — collapsible section visibility
   const [showPersonalInfo, setShowPersonalInfo] = useState<boolean>(false);
   const [showEducations, setShowEducations] = useState<boolean>(false);
   const [showExperineces, setShowExperineces] = useState<boolean>(false);
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const [showSkills, setShowSkills] = useState<boolean>(false);
   const [showLanguage, setShowLanguage] = useState<boolean>(false);
-  // Temporary States
+
+  // Draft inputs for tag-style skill and language fields
   const [skill, setSkill] = useState<Single>({ id: uuidv4(), name: "" });
   const [language, setLanguage] = useState<Single>({ id: uuidv4(), name: "" });
 
+  // Effects — hydrate from localStorage on mount
   useEffect(() => {
     const savedUser = localStorage.getItem("userInfo");
     if (!savedUser) return;
@@ -121,6 +126,8 @@ export default function CVForm() {
       console.log(error);
     }
   }, [dispatch]);
+
+  // Recalculate profile completion whenever resume fields change
   useEffect(() => {
     function trackingProgress() {
       let newProgress = 0;
@@ -169,6 +176,7 @@ export default function CVForm() {
     }
     trackingProgress();
   }, [personalInfo, summary, experience, education, skills, languages]);
+
   useEffect(() => {
     function loadData() {
       const savedUser = localStorage.getItem("userInfo");
@@ -186,11 +194,15 @@ export default function CVForm() {
     }
     loadData();
   }, [dispatch]);
+
+  // Persist entire resume state to localStorage after initial hydration
   useEffect(() => {
     if (!hydrated) return;
 
     localStorage.setItem("userInfo", JSON.stringify(state));
   }, [state, hydrated]);
+
+  // Render
   return (
     <>
       <Progress percentage={percentage} color={color} />
@@ -200,17 +212,17 @@ export default function CVForm() {
       >
         <div>
           <div
-            className={`shadow-lg shadow-gray-300/45 border border-[#C3C6D7] rounded-md overflow-hidden bg-white ${showPersonalInfo ? "max-h-dvh" : "max-h-11"} transition-all`}
+            className={`overflow-hidden border border-[#C3C6D7] rounded-md bg-white shadow-lg shadow-gray-300/45 transition-all ${showPersonalInfo ? "max-h-dvh" : "max-h-11"}`}
           >
-            <div className="flex overflow-hidden bg-[#F8F9FF] px-4 py-2 items-center justify-between border-b border-b-[#C3C6D7]">
-              <div className="flex relative z-50">
+            <div className="flex items-center justify-between overflow-hidden border-b border-b-[#C3C6D7] bg-[#F8F9FF] px-4 py-2">
+              <div className="relative z-50 flex">
                 <h2 className="flex items-center gap-2 text-lg font-semibold text-black">
                   <FaRegUser color="#0D47A1" />
                   Personal Info
                 </h2>
               </div>
               <button
-                className={`cursor-pointer ${!showPersonalInfo && "rotate-180"} transition-all`}
+                className={`cursor-pointer transition-all ${!showPersonalInfo && "rotate-180"}`}
                 onClick={() => setShowPersonalInfo(!showPersonalInfo)}
               >
                 <IoIosArrowDown size={25}></IoIosArrowDown>
@@ -219,7 +231,7 @@ export default function CVForm() {
 
             <div className="p-4">
               <div>
-                <label className="font-semibold text-sm" htmlFor="fullname">
+                <label className="text-sm font-semibold" htmlFor="fullname">
                   Full Name
                 </label>
                 <input
@@ -234,9 +246,9 @@ export default function CVForm() {
                 />
               </div>
 
-              <div className="flex gap-2 my-2 flex-wrap">
+              <div className="my-2 flex flex-wrap gap-2">
                 <div className="flex-1 basis-72">
-                  <label className="font-semibold text-sm" htmlFor="address">
+                  <label className="text-sm font-semibold" htmlFor="address">
                     Address
                   </label>
                   <input
@@ -252,7 +264,7 @@ export default function CVForm() {
                 </div>
                 <div className="flex-1 basis-72">
                   <label
-                    className="font-semibold text-sm"
+                    className="text-sm font-semibold"
                     htmlFor="phoneNumber"
                   >
                     Phone Number
@@ -270,9 +282,9 @@ export default function CVForm() {
                   />
                 </div>
               </div>
-              <div className="flex gap-2 w-full flex-wrap">
+              <div className="flex w-full flex-wrap gap-2">
                 <div className="flex-1 basis-72">
-                  <label className="font-semibold text-sm" htmlFor="email">
+                  <label className="text-sm font-semibold" htmlFor="email">
                     Email
                   </label>
                   <input
@@ -287,7 +299,7 @@ export default function CVForm() {
                   />
                 </div>
                 <div className="flex-1 basis-72">
-                  <label className="font-semibold text-sm" htmlFor="website">
+                  <label className="text-sm font-semibold" htmlFor="website">
                     Website
                   </label>
                   <input
@@ -307,15 +319,15 @@ export default function CVForm() {
 
           <div>
             <div
-              className={`shadow-lg shadow-gray-300/45 border border-[#C3C6D7] rounded-md overflow-hidden mt-4 ${showSummary ? "max-h-dvh" : "max-h-11"} transition-all`}
+              className={`mt-4 overflow-hidden border border-[#C3C6D7] rounded-md shadow-lg shadow-gray-300/45 transition-all ${showSummary ? "max-h-dvh" : "max-h-11"}`}
             >
-              <div className="flex bg-[#F8F9FF] px-4 py-2 items-center justify-between border-b border-b-[#C3C6D7]">
+              <div className="flex items-center justify-between border-b border-b-[#C3C6D7] bg-[#F8F9FF] px-4 py-2">
                 <h2 className="flex items-center gap-2 text-lg font-semibold">
                   <AiOutlineAlignLeft color="#0D47A1" />
                   Professional Summary
                 </h2>
                 <button
-                  className={`cursor-pointer ${!showSummary && "rotate-180"} transition-all`}
+                  className={`cursor-pointer transition-all ${!showSummary && "rotate-180"}`}
                   onClick={() => setShowSummary(!showSummary)}
                 >
                   <IoIosArrowDown size={25}></IoIosArrowDown>
@@ -324,7 +336,7 @@ export default function CVForm() {
               <textarea
                 name="summary"
                 id="summary"
-                className="w-full p-4 resize-none h-70 focus:outline-none bg-white"
+                className="h-70 w-full resize-none bg-white p-4 focus:outline-none"
                 placeholder="Results-oriented Engineering Executive with a proven track..."
                 value={summary}
                 onChange={(e) => {
@@ -335,21 +347,21 @@ export default function CVForm() {
           </div>
           <div>
             <div
-              className={`shadow-lg shadow-gray-300/45 border border-[#C3C6D7] rounded-md overflow-hidden mt-4 ${showExperineces ? "max-h-dvh" : "max-h-11"} transition-all`}
+              className={`mt-4 overflow-hidden border border-[#C3C6D7] rounded-md shadow-lg shadow-gray-300/45 transition-all ${showExperineces ? "max-h-dvh" : "max-h-11"}`}
             >
-              <div className="flex bg-[#F8F9FF] px-4 py-2 items-center justify-between border-b border-b-[#C3C6D7]">
+              <div className="flex items-center justify-between border-b border-b-[#C3C6D7] bg-[#F8F9FF] px-4 py-2">
                 <h2 className="flex items-center gap-2 text-lg font-semibold">
                   <LuBriefcaseBusiness color="#0D47A1" />
                   Work Experience
                 </h2>
                 <button
-                  className={`cursor-pointer ${!showExperineces && "rotate-180"} transition-all`}
+                  className={`cursor-pointer transition-all ${!showExperineces && "rotate-180"}`}
                   onClick={() => setShowExperineces(!showExperineces)}
                 >
                   <IoIosArrowDown size={25}></IoIosArrowDown>
                 </button>
               </div>
-              <div className="p-4 bg-white">
+              <div className="bg-white p-4">
                 {experience.map((exp) => (
                   <ExperienceJSX
                     exp={exp}
@@ -358,9 +370,7 @@ export default function CVForm() {
                   />
                 ))}
                 <button
-                  className="text-lg flex gap-2 justify-center items-center p-1 w-full 
-                border-2 font-semibold border-dashed border-[#B4C5FF] rounded-sm text-center
-                cursor-pointer text-[#004AC6] mt-4"
+                  className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-2 border-dashed border-[#B4C5FF] p-1 text-center text-lg font-semibold text-[#004AC6]"
                   onClick={createNewExperience}
                 >
                   <FaPlus size={15} /> Add Experience
@@ -370,21 +380,21 @@ export default function CVForm() {
           </div>
           <div>
             <div
-              className={`shadow-lg  shadow-gray-300/45 border border-[#C3C6D7] rounded-md overflow-hidden mt-4 ${showEducations ? "max-h-dvh" : "max-h-11"} transition-all`}
+              className={`mt-4 overflow-hidden border border-[#C3C6D7] rounded-md shadow-lg shadow-gray-300/45 transition-all ${showEducations ? "max-h-dvh" : "max-h-11"}`}
             >
-              <div className="flex bg-[#F8F9FF] px-4 py-2 items-center justify-between border-b border-b-[#C3C6D7]">
+              <div className="flex items-center justify-between border-b border-b-[#C3C6D7] bg-[#F8F9FF] px-4 py-2">
                 <h2 className="flex items-center gap-2 text-lg font-semibold">
                   <SlGraduation color="#0D47A1" />
                   Educations
                 </h2>
                 <button
-                  className={`cursor-pointer ${!showEducations && "rotate-180"} transition-all`}
+                  className={`cursor-pointer transition-all ${!showEducations && "rotate-180"}`}
                   onClick={() => setShowEducations(!showEducations)}
                 >
                   <IoIosArrowDown size={25} />
                 </button>
               </div>
-              <div className="p-4 bg-white">
+              <div className="bg-white p-4">
                 {education.map((edu) => (
                   <EducationJSX
                     edu={edu}
@@ -393,9 +403,7 @@ export default function CVForm() {
                   />
                 ))}
                 <button
-                  className="text-lg flex gap-2 justify-center items-center p-1 w-full 
-                border-2 font-semibold border-dashed border-[#B4C5FF] rounded-sm text-center
-                cursor-pointer text-[#004AC6] mt-4"
+                  className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-2 border-dashed border-[#B4C5FF] p-1 text-center text-lg font-semibold text-[#004AC6]"
                   onClick={createNewEducation}
                 >
                   <FaPlus size={15} /> Add Education
@@ -403,40 +411,31 @@ export default function CVForm() {
               </div>
             </div>
           </div>
-          <div className="flex gap-x-4 flex-wrap">
+          <div className="flex flex-wrap gap-x-4">
             <div
-              className={`flex-1 basis-sm shadow-lg shadow-gray-300/45 border border-[#C3C6D7] rounded-md overflow-hidden mt-4 ${showLanguage ? "max-h-dvh" : "max-h-11"} transition-all`}
+              className={`mt-4 flex-1 basis-sm overflow-hidden border border-[#C3C6D7] rounded-md shadow-lg shadow-gray-300/45 transition-all ${showLanguage ? "max-h-dvh" : "max-h-11"}`}
             >
-              <div className="flex bg-[#F8F9FF] px-4 py-2 items-center justify-between border-b border-b-[#C3C6D7]">
+              <div className="flex items-center justify-between border-b border-b-[#C3C6D7] bg-[#F8F9FF] px-4 py-2">
                 <h2 className="flex items-center gap-2 text-lg font-semibold">
                   <HiLanguage color="#0D47A1" />
                   Languages
                 </h2>
                 <button
-                  className={`cursor-pointer ${!showLanguage && "rotate-180"} transition-all`}
+                  className={`cursor-pointer transition-all ${!showLanguage && "rotate-180"}`}
                   onClick={() => setShowLanguage(!showLanguage)}
                 >
                   <IoIosArrowDown size={25} />
                 </button>
               </div>
-              <div className="p-4 bg-white">
+              <div className="bg-white p-4">
                 {/* Add Language */}
-                <div className="flex w-full overflow-hidden border border-gray-300 rounded-lg focus-within:border-[#0D47A1] focus-within:ring-2 focus-within:ring-[#0D47A1]/10 transition-all">
+                <div className="flex w-full overflow-hidden rounded-lg border border-gray-300 transition-all focus-within:border-[#0D47A1] focus-within:ring-2 focus-within:ring-[#0D47A1]/10">
                   <input
                     type="text"
                     name="languageName"
                     id="languageName"
                     placeholder="e.g. English, Arabic, French"
-                    className="
-        flex-1
-        min-w-0
-        px-3
-        py-2
-        text-sm
-        text-gray-800
-        placeholder:text-gray-400
-        outline-none
-      "
+                    className="min-w-0 flex-1 px-3 py-2 text-sm text-gray-800 outline-none placeholder:text-gray-400"
                     value={language.name}
                     onChange={(e) =>
                       setLanguage((prev) => ({
@@ -453,17 +452,7 @@ export default function CVForm() {
 
                   <button
                     type="button"
-                    className="
-        px-5
-        py-2
-        bg-[#0D47A1]
-        hover:bg-[#093575]
-        text-white
-        text-sm
-        font-medium
-        transition-colors
-        cursor-pointer
-      "
+                    className="cursor-pointer px-5 py-2 text-sm font-medium text-white bg-[#0D47A1] transition-colors hover:bg-[#093575]"
                     onClick={() => createNewLanguage(language.name)}
                   >
                     Add
@@ -473,7 +462,7 @@ export default function CVForm() {
                 {/* Languages */}
                 {languages.length > 0 ? (
                   <div className="mt-4">
-                    <p className="mb-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-500">
                       Added languages
                     </p>
 
@@ -481,39 +470,13 @@ export default function CVForm() {
                       {languages.map((lang) => (
                         <li
                           key={lang.id}
-                          className="
-              inline-flex
-              items-center
-              gap-1.5
-              px-3
-              py-1.5
-              bg-[#E8F0FE]
-              text-[#173B69]
-              border border-[#C7DAFA]
-              rounded-full
-              text-sm
-              font-medium
-              hover:bg-[#DCEAFF]
-              transition-colors
-            "
+                          className="inline-flex items-center gap-1.5 rounded-full border border-[#C7DAFA] bg-[#E8F0FE] px-3 py-1.5 text-sm font-medium text-[#173B69] transition-colors hover:bg-[#DCEAFF]"
                         >
                           <span>{lang.name}</span>
 
                           <button
                             type="button"
-                            className="
-                flex
-                items-center
-                justify-center
-                w-5
-                h-5
-                rounded-full
-                text-gray-400
-                hover:text-red-500
-                hover:bg-red-50
-                transition-colors
-                cursor-pointer
-              "
+                            className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
                             onClick={() => dispatch(removeLanguage(lang.id))}
                           >
                             <FaRegTrashAlt size={11} />
@@ -530,38 +493,29 @@ export default function CVForm() {
               </div>
             </div>
             <div
-              className={`flex-1 basis-sm shadow-md shadow-gray-300/45 border border-[#C3C6D7] rounded-md overflow-hidden mt-4 ${showSkills ? "max-h-dvh" : "max-h-11"} transition-all`}
+              className={`mt-4 flex-1 basis-sm overflow-hidden border border-[#C3C6D7] rounded-md shadow-md shadow-gray-300/45 transition-all ${showSkills ? "max-h-dvh" : "max-h-11"}`}
             >
-              <div className="flex bg-[#F8F9FF] px-4 py-2 items-center justify-between border-b border-b-[#C3C6D7]">
+              <div className="flex items-center justify-between border-b border-b-[#C3C6D7] bg-[#F8F9FF] px-4 py-2">
                 <h2 className="flex items-center gap-2 text-lg font-semibold">
                   <LuBrain color="#0D47A1" />
                   Skills
                 </h2>
                 <button
-                  className={`cursor-pointer ${!showSkills && "rotate-180"} transition-all`}
+                  className={`cursor-pointer transition-all ${!showSkills && "rotate-180"}`}
                   onClick={() => setShowSkills(!showSkills)}
                 >
                   <IoIosArrowDown size={25} />
                 </button>
               </div>
-              <div className="p-4 bg-white">
+              <div className="bg-white p-4">
                 {/* Add Skill */}
-                <div className="flex w-full overflow-hidden border border-gray-300 rounded-lg focus-within:border-[#0D47A1] focus-within:ring-2 focus-within:ring-[#0D47A1]/10 transition-all">
+                <div className="flex w-full overflow-hidden rounded-lg border border-gray-300 transition-all focus-within:border-[#0D47A1] focus-within:ring-2 focus-within:ring-[#0D47A1]/10">
                   <input
                     type="text"
                     name="skillName"
                     id="skillName"
                     placeholder="e.g. React, TypeScript, Next.js"
-                    className="
-        flex-1
-        min-w-0
-        px-3
-        py-2
-        text-sm
-        text-gray-800
-        placeholder:text-gray-400
-        outline-none
-      "
+                    className="min-w-0 flex-1 px-3 py-2 text-sm text-gray-800 outline-none placeholder:text-gray-400"
                     value={skill.name}
                     onChange={(e) =>
                       setSkill((prev) => ({
@@ -578,17 +532,7 @@ export default function CVForm() {
 
                   <button
                     type="button"
-                    className="
-        px-5
-        py-2
-        bg-[#0D47A1]
-        hover:bg-[#093575]
-        text-white
-        text-sm
-        font-medium
-        transition-colors
-        cursor-pointer
-      "
+                    className="cursor-pointer px-5 py-2 text-sm font-medium text-white bg-[#0D47A1] transition-colors hover:bg-[#093575]"
                     onClick={() => createNewSkill(skill.name)}
                   >
                     Add
@@ -598,7 +542,7 @@ export default function CVForm() {
                 {/* Skills */}
                 {skills.length > 0 ? (
                   <div className="mt-4">
-                    <p className="mb-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-500">
                       Added skills
                     </p>
 
@@ -606,39 +550,13 @@ export default function CVForm() {
                       {skills.map((skill) => (
                         <li
                           key={skill.id}
-                          className="
-                            inline-flex
-                            items-center
-                            gap-1.5
-                            px-3
-                            py-1.5
-                            bg-[#E8F0FE]
-                            text-[#173B69]
-                            border border-[#C7DAFA]
-                            rounded-full
-                            text-sm
-                            font-medium
-                            hover:bg-[#DCEAFF]
-                            transition-colors
-            "
+                          className="inline-flex items-center gap-1.5 rounded-full border border-[#C7DAFA] bg-[#E8F0FE] px-3 py-1.5 text-sm font-medium text-[#173B69] transition-colors hover:bg-[#DCEAFF]"
                         >
                           <span>{skill.name}</span>
 
                           <button
                             type="button"
-                            className="
-                flex
-                items-center
-                justify-center
-                w-5
-                h-5
-                rounded-full
-                text-gray-400
-                hover:text-red-500
-                hover:bg-red-50
-                transition-colors
-                cursor-pointer
-              "
+                            className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
                             onClick={() => dispatch(removeSkill(skill.id))}
                           >
                             <FaRegTrashAlt size={11} />
@@ -661,6 +579,7 @@ export default function CVForm() {
   );
 }
 
+// Single education entry with inline fields and bullet-point descriptions
 function EducationJSX({
   edu,
   inputClasses,
@@ -671,11 +590,11 @@ function EducationJSX({
   const dispatch = useDispatch();
 
   return (
-    <div className="relative mb-4 bg-[#edf0f9a7] p-4 border border-gray-300 rounded-sm">
+    <div className="relative mb-4 rounded-sm border border-gray-300 bg-[#edf0f9a7] p-4">
       {/* Delete Education */}
       <button
         type="button"
-        className="absolute right-3 top-3 text-red-600 cursor-pointer"
+        className="absolute right-3 top-3 cursor-pointer text-red-600"
         onClick={() => {
           dispatch(removeEducation(edu.id));
         }}
@@ -685,7 +604,7 @@ function EducationJSX({
 
       {/* Degree */}
       <div>
-        <label className="font-semibold text-sm" htmlFor={`degree-${edu.id}`}>
+        <label className="text-sm font-semibold" htmlFor={`degree-${edu.id}`}>
           Degree
         </label>
 
@@ -847,6 +766,7 @@ function EducationJSX({
     </div>
   );
 }
+// Single work experience entry with inline fields and bullet-point descriptions
 function ExperienceJSX({
   exp,
   inputClasses,
@@ -1027,6 +947,7 @@ function ExperienceJSX({
   );
 }
 
+// Header bar — profile completion progress and accent color picker
 function Progress({
   percentage,
   color,
@@ -1035,25 +956,32 @@ function Progress({
   color: string;
 }) {
   const dispatch = useDispatch();
-  const [custom, setCustom] = useState<string>("#8055a2");
-  const colors = ["#1d1d1d", "#1F3864", "#333333", "#374151", "#7C3AED"];
+  const [custom, setCustom] = useState<string>("#4A2C5A");
+  const colors = [
+    "#1F3864",
+    "#000000",
+    "#333333",
+    "#1E4D2B",
+    "#6E1F2E",
+    "#168F8B",
+  ];
   return (
     <div className="p-8 shadow shadow-gray-300">
       <h2 className="text-3xl font-semibold">Edit Details</h2>
       <div>
-        <h4 className="text-[#004AC6] font-bold text-sm flex justify-between">
+        <h4 className="flex justify-between text-sm font-bold text-[#004AC6]">
           Profile Completion
           <span className="text-[#434655]">{percentage.toFixed()}%</span>
         </h4>
-        <div className="relative bg-[#D3E4FE] h-1 rounded-xl overflow-hidden">
+        <div className="relative h-1 overflow-hidden rounded-xl bg-[#D3E4FE]">
           <span
-            className="bg-[#004AC6] absolute h-full transition-[width] duration-200 ease"
+            className="absolute h-full bg-[#004AC6] transition-[width] duration-200 ease"
             style={{ width: `${percentage}%` }}
           />
         </div>
       </div>
 
-      <div className="flex gap-2 mt-4">
+      <div className="mt-4 flex gap-2">
         {colors.map((item) => (
           <button
             key={item}
@@ -1067,11 +995,8 @@ function Progress({
             }}
           />
         ))}
-        <label
-          htmlFor="color"
-          className="relative overflow-hidden size-8 rounded-full "
-        >
-          <VscSettingsCompact className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90 text-white bg-black/50 w-full h-full rounded-full p-1 opacity-0 hover:opacity-100 cursor-pointer" />
+        <label htmlFor="color" className="relative overflow-hidden size-fit ">
+          <VscSettingsCompact className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 rotate-90 rounded-full bg-black/50 p-1 text-white opacity-0 hover:opacity-100 cursor-pointer" />
           <input
             key={color}
             type="color"
@@ -1082,9 +1007,11 @@ function Progress({
               dispatch(setColor(value));
             }}
             value={custom}
-            className="size-8 rounded-full border-2"
+            className={`size-8 rounded-full border-2 ${
+              color === custom ? "border-slate-700" : "border-transparent"
+            }`}
             style={{
-              backgroundColor: color,
+              backgroundColor: custom,
             }}
           />{" "}
         </label>
