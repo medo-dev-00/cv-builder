@@ -67,6 +67,47 @@ export default function ClassicOne() {
           );
         })}
       </div>
+      <div>
+        <h2 className="uppercase font-semibold text-xl" style={{ color }}>
+          EDUCATION
+        </h2>
+        <div
+          className="w-full h-0.5 rounded-sm mt-3 mb-6"
+          style={{ backgroundColor: color }}
+        ></div>
+        {resumeData.experience.map((exp) => {
+          return (
+            <div key={exp.id}>
+              <h3 className="flex justify-between text-[16px] font-semibold">
+                <span>{exp.company}</span>{" "}
+                <span className="font-medium">
+                  {exp.startDate} {exp.startDate && exp.endDate && " - "}
+                  {exp.endDate !== "" ? exp.endDate : " - Present"}
+                </span>
+              </h3>
+              <h4 className="text-[14px] my-0.5">{exp.jobTitle}</h4>
+              <ul className="my-2 pl-8">
+                {exp.points.map((desc, index) => {
+                  return (
+                    <li key={index} className="list-disc text-[14.2px]">
+                      {desc}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+      <div>
+        <h2 className="uppercase font-semibold text-xl" style={{ color }}>
+          EDUCATION
+        </h2>
+        <div
+          className="w-full h-0.5 rounded-sm mt-3 mb-6"
+          style={{ backgroundColor: color }}
+        ></div>
+      </div>
     </div>
   );
 }
