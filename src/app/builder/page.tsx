@@ -134,13 +134,13 @@ export default function Builder() {
 
         {/* Download */}
 
-        <div className="ml-auto border-t border-gray-200 p-4">
+        <div className="border-t border-gray-200 p-4">
           {/* Split button: download action + quality picker toggle */}
 
           <button
             type="button"
             onClick={handleDownloadPDF}
-            className="relative inline-flex items-center rounded-lg border border-gray-300 bg-white text-[#0D47A1] shadow-sm px-4 py-2 gap-2"
+            className="relative m-auto w-fit flex items-center rounded-lg border border-gray-300 bg-white text-[#0D47A1] shadow-sm px-4 py-2 gap-2"
           >
             <FaFileDownload />
             Download PDF

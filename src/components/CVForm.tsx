@@ -37,6 +37,8 @@ import {
 } from "@/lib/features/resumeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import { BiLeftArrowAlt } from "react-icons/bi";
+import Link from "next/link";
 
 // Resume data entry form — dispatches Redux updates and persists to localStorage
 export default function CVForm() {
@@ -1000,7 +1002,12 @@ function Progress({
   ];
   return (
     <div className="p-8 shadow shadow-gray-300">
-      <h2 className="text-3xl font-semibold">Edit Details</h2>
+      <h2 className="flex gap-4 text-3xl font-semibold mb-2">
+        <Link href={"/"} className="hover:-translate-x-px transition-all">
+          <BiLeftArrowAlt size={35} />
+        </Link>
+        <span>Edit Details</span>
+      </h2>
       <div>
         <h4 className="flex justify-between text-sm font-bold text-[#004AC6]">
           Profile Completion

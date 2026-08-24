@@ -7,12 +7,12 @@ export default function Minimalist() {
   return (
     <div className="w-full p-10">
       <h2
-        className="text-5xl uppercase tracking-wider text-center"
+        className="text-4xl uppercase tracking-widest text-center font-semibold"
         style={{ color }}
       >
         {resumeData.personalInfo.fullName}
       </h2>
-      <p className="text-2xl uppercase text-center mt-3 mb-2">
+      <p className="text-xl uppercase text-center mt-3 mb-2">
         {resumeData.personalInfo.job}
       </p>
       <div className="flex justify-center items-center gap-2 text-center">

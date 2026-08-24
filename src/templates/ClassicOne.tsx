@@ -37,17 +37,17 @@ export default function ClassicOne() {
           Profile
         </h2>
         <div
-          className="w-full h-0.5 rounded-sm mt-3 mb-6"
+          className="w-full h-[1.3px] rounded-sm mt-2 mb-6"
           style={{ backgroundColor: color }}
         ></div>
-        <p className="mb-6 text-[16px]">{resumeData.summary}</p>
+        <p className="text-[16px]">{resumeData.summary}</p>
       </div>
       <div>
-        <h2 className="uppercase font-semibold text-xl" style={{ color }}>
+        <h2 className="uppercase font-semibold text-xl mt-6" style={{ color }}>
           EDUCATION
         </h2>
         <div
-          className="w-full h-0.5 rounded-sm mt-3 mb-6"
+          className="w-full h-[1.3px] rounded-sm mt-2 mb-6"
           style={{ backgroundColor: color }}
         ></div>
 
@@ -68,11 +68,11 @@ export default function ClassicOne() {
         })}
       </div>
       <div>
-        <h2 className="uppercase font-semibold text-xl" style={{ color }}>
-          EDUCATION
+        <h2 className="uppercase font-semibold text-xl mt-6" style={{ color }}>
+          Work experience
         </h2>
         <div
-          className="w-full h-0.5 rounded-sm mt-3 mb-6"
+          className="w-full h-[1.3px] rounded-sm mt-2 mb-6"
           style={{ backgroundColor: color }}
         ></div>
         {resumeData.experience.map((exp) => {
@@ -100,11 +100,11 @@ export default function ClassicOne() {
         })}
       </div>
       <div>
-        <h2 className="uppercase font-semibold text-xl" style={{ color }}>
-          EDUCATION
+        <h2 className="uppercase font-semibold text-xl mt-6" style={{ color }}>
+          Skills
         </h2>
         <div
-          className="w-full h-0.5 rounded-sm mt-3 mb-6"
+          className="w-full h-[1.3px] rounded-sm mt-2 mb-6"
           style={{ backgroundColor: color }}
         ></div>
       </div>

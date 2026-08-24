@@ -25,40 +25,36 @@ export default function BuilderHeader() {
   return (
     <nav className="flex items-center justify-between bg-[#F8F9FF] px-6 py-3">
       <h1 className="text-lg font-semibold text-[#1e1e1e]">Resume Builder</h1>
-
-      <div className="relative">
-        {/* Button */}
-        <button
-          type="button"
-          onClick={() => setOpen((prev) => !prev)}
-          className="
+      <div className="flex items-center gap-2">
+        <span className="text-sm">Choose Template: </span>
+        <div className="relative">
+          {/* Button */}
+          <button
+            type="button"
+            onClick={() => setOpen((prev) => !prev)}
+            className="
             inline-flex items-center justify-center gap-2
             rounded-lg
             border border-gray-300
             bg-white
-            px-4 py-2.5
+            px-3 py-1
             text-sm font-medium
             text-gray-700
-            shadow-sm
-            hover:bg-gray-50
-            focus:outline-none
-            focus:ring-4
-            focus:ring-blue-100
           "
-        >
-          {selectedTemplate.label}
+          >
+            {selectedTemplate.label}
 
-          <FaChevronDown
-            className={`h-3 w-3 transition-transform ${
-              open ? "rotate-180" : ""
-            }`}
-          />
-        </button>
+            <FaChevronDown
+              className={`h-3 w-3 transition-transform ${
+                open ? "rotate-180" : ""
+              }`}
+            />
+          </button>
 
-        {/* Dropdown */}
-        {open && (
-          <div
-            className="
+          {/* Dropdown */}
+          {open && (
+            <div
+              className="
               absolute right-0 top-full z-50
               mt-2
               w-44
@@ -68,19 +64,19 @@ export default function BuilderHeader() {
               p-2
               shadow-lg
             "
-          >
-            {templates.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => {
-                  dispatch(setTemplate(item.id));
-                  setOpen(false);
-                }}
-                className={`
+            >
+              {templates.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    dispatch(setTemplate(item.id));
+                    setOpen(false);
+                  }}
+                  className={`
                   flex w-full items-center
                   rounded-md
-                  px-3 py-2
+                  px-2 py-1
                   text-left text-sm
                   transition-colors
                   ${
@@ -89,14 +85,15 @@ export default function BuilderHeader() {
                       : "text-gray-700 hover:bg-gray-100"
                   }
                 `}
-              >
-                {item.label}
+                >
+                  {item.label}
 
-                {template === item.id && <span className="ml-auto">✓</span>}
-              </button>
-            ))}
-          </div>
-        )}
+                  {template === item.id && <span className="ml-auto">✓</span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
