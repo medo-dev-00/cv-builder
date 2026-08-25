@@ -164,18 +164,12 @@ export default function Simple() {
             {resumeData.skills.map((skill) => skill.name).join(", ")}
           </li>
         )}
-        {resumeData.languages.length > 0 && (
-          <li className="ml-8 list-disc text-[14px]">
-            <h4 className="inline font-semibold">Languages: </h4>
-            {resumeData.languages.map((lang) => lang.name).join(", ")}
+        {resumeData.moreSections.map((sec) => (
+          <li className="ml-8 list-disc text-[14px]" key={sec.id}>
+            <h4 className="inline font-semibold">{sec.sectionName}: </h4>
+            {sec.body.map((s) => s.name).join(", ")}
           </li>
-        )}
-        {resumeData.certifications.length > 0 && (
-          <li className="ml-8 list-disc text-[14px]">
-            <h4 className="inline font-semibold">Certifications: </h4>
-            {resumeData.certifications.map((cert) => cert.name).join(", ")}
-          </li>
-        )}
+        ))}
       </ul>
     </div>
   );

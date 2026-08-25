@@ -107,6 +107,16 @@ export default function ClassicOne() {
           className="w-full h-[1.3px] rounded-sm mt-2 mb-6"
           style={{ backgroundColor: color }}
         ></div>
+        <ul className="my-2 pl-8 list-disc">
+          <li>
+            Technical Skill: {resumeData.skills.map((s) => s.name).join(", ")}
+          </li>
+          {resumeData.moreSections.map((sec) => (
+            <li key={sec.id}>
+              {sec.sectionName}: {sec.body.map((s) => s.name).join(", ")}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

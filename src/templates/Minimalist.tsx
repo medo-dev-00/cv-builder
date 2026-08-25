@@ -106,7 +106,6 @@ export default function Minimalist() {
       </div>
       <div>
         <h3 className="uppercase font-bold text-[20px]" style={{ color }}>
-          {" "}
           technical skills
         </h3>
         <ul className="my-1 pl-8">
@@ -118,6 +117,24 @@ export default function Minimalist() {
             );
           })}
         </ul>
+        {resumeData.moreSections.map((sec) => {
+          return (
+            <div key={sec.id}>
+              <h3 className="uppercase font-bold text-[20px]" style={{ color }}>
+                {sec.sectionName}
+              </h3>
+              <ul className="my-1 pl-8">
+                {sec.body.map((s) => {
+                  return (
+                    <li key={s.id} className="list-disc">
+                      {s.name}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

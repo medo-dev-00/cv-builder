@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { bold } from "next/dist/lib/picocolors";
 
 // --- Types ---
 
@@ -45,12 +46,19 @@ export type ResumeState = {
 
   certifications: Single[];
   template: TemplateType;
+  moreSections: NewSection[];
 };
 
 export type Single = {
   id: string;
-  name: string;
+  name?: string;
 };
+
+export interface NewSection {
+  id: string;
+  sectionName: string;
+  body: Single[];
+}
 
 // --- Initial state ---
 
@@ -77,6 +85,7 @@ const initialState: ResumeState = {
 
   certifications: [],
   template: "simple",
+  moreSections: [],
 };
 
 const resumeSlice = createSlice({
@@ -273,33 +282,88 @@ const resumeSlice = createSlice({
         (cert) => cert.id !== action.payload,
       );
     },
+    addMoreSection: (state, action: PayloadAction<NewSection>) => {
+      state.moreSections.push(action.payload);
+    },
+    updateSection: (
+      state,
+      action: PayloadAction<NewSection & { type: "ADD" | "DELETE" }>,
+    ) => {
+      switch (action.payload.type) {
+        case "ADD": {
+          const section = state.moreSections.find(
+            (sec) => sec.id === action.payload.id,
+          );
+
+          if (section) {
+            section.sectionName = action.payload.sectionName;
+          }
+          break;
+        }
+        case "DELETE": {
+          state.moreSections = state.moreSections.filter(
+            (sec) => sec.id !== action.payload.id,
+          );
+          break;
+        }
+      }
+    },
+    updateSectionBody: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        body: Single;
+        type: "ADD" | "DELETE";
+      }>,
+    ) => {
+      const { type, id, body } = action.payload;
+      state.moreSections?.forEach((sec) => {
+        switch (type) {
+          case "ADD": {
+            if (sec.id === id) {
+              sec.body.push(body);
+            }
+            break;
+          }
+          case "DELETE": {
+            if (sec.id === id) {
+              sec.body = sec.body.filter((s) => s.id !== body.id);
+              break;
+            }
+          }
+        }
+      });
+    },
   },
 });
 
 export const {
-  updatePersonalInfo,
-  updateSummary,
-  addExperience,
-  removeExperience,
   addEducation,
-  removeEducation,
-  setSkills,
-  setLanguages,
-  setCertifications,
-  updateExperience,
-  removeSkill,
-  removeLanguage,
-  setResume,
-  setColor,
-  updateEducation,
   addEducationPoint,
-  removeCertificate,
-  removeEducationPoint,
-  updateEducationPoint,
+  addExperience,
   addExperiencePoint,
+  addMoreSection,
+  removeCertificate,
+  removeEducation,
+  removeEducationPoint,
+  removeExperience,
   removeExperiencePoint,
-  updateExperiencePoint,
+  removeLanguage,
+  removeSkill,
+  setCertifications,
+  setColor,
+  setLanguages,
+  setResume,
+  setSkills,
   setTemplate,
+  updateEducation,
+  updateEducationPoint,
+  updateExperience,
+  updateExperiencePoint,
+  updatePersonalInfo,
+  updateSection,
+  updateSectionBody,
+  updateSummary,
 } = resumeSlice.actions;
 
 export default resumeSlice.reducer;
