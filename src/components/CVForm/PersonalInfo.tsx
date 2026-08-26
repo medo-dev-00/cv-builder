@@ -10,7 +10,9 @@ export default function PersonalInfo({
 }: {
   inputClasses: string;
 }) {
-  const state = useSelector((state: RootState) => state.resume);
+  const personalInfo = useSelector(
+    (state: RootState) => state.resume.personalInfo,
+  );
   const dispatch = useDispatch();
   // State — collapsible section visibility
   const [showPersonalInfo, setShowPersonalInfo] = useState<boolean>(false);
@@ -43,7 +45,7 @@ export default function PersonalInfo({
             name="fullname"
             id="fullname"
             className={inputClasses}
-            value={state.personalInfo.fullName}
+            value={personalInfo.fullName}
             onChange={(e) => {
               dispatch(updatePersonalInfo({ fullName: e.target.value }));
             }}
@@ -58,7 +60,7 @@ export default function PersonalInfo({
             name="job"
             id="job"
             className={inputClasses}
-            value={state.personalInfo.job}
+            value={personalInfo.job}
             onChange={(e) => {
               dispatch(updatePersonalInfo({ job: e.target.value }));
             }}
@@ -74,7 +76,7 @@ export default function PersonalInfo({
             name="address"
             id="address"
             className={inputClasses}
-            value={state.personalInfo.address}
+            value={personalInfo.address}
             onChange={(e) => {
               dispatch(updatePersonalInfo({ address: e.target.value }));
             }}
@@ -90,7 +92,7 @@ export default function PersonalInfo({
             id="phoneNumber"
             className={inputClasses}
             inputMode="numeric"
-            value={state.personalInfo.phone}
+            value={personalInfo.phone}
             onChange={(e) => {
               dispatch(updatePersonalInfo({ phone: e.target.value }));
             }}
@@ -106,7 +108,7 @@ export default function PersonalInfo({
             name="email"
             id="email"
             className={inputClasses}
-            value={state.personalInfo.email}
+            value={personalInfo.email}
             onChange={(e) => {
               dispatch(updatePersonalInfo({ email: e.target.value }));
             }}
@@ -121,7 +123,7 @@ export default function PersonalInfo({
             name="website"
             id="website"
             className={inputClasses}
-            value={state.personalInfo.website}
+            value={personalInfo.website}
             onChange={(e) => {
               dispatch(updatePersonalInfo({ website: e.target.value }));
             }}

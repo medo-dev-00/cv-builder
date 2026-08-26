@@ -6,13 +6,13 @@ import { v4 as uuidv4 } from "uuid";
 import { setResume, addMoreSection } from "@/lib/features/resumeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import NewField from "../CVForm/NewField";
-import Skills from "../CVForm/SkillsField";
+
 import Progress from "../CVForm/CVHeader";
 import PersonalInfo from "../CVForm/PersonalInfo";
 import Summary from "../CVForm/Summary";
 import Experience from "../CVForm/Experience";
 import Education from "../CVForm/Education";
+import MoreSections from "../CVForm/MoreSections";
 
 // Resume data entry form — dispatches Redux updates and persists to localStorage
 export default function CVForm() {
@@ -134,38 +134,28 @@ export default function CVForm() {
         onSubmit={(e) => e.preventDefault()}
         className="flex-1 min-w-100 h-[80vh] overflow-auto p-4"
       >
-        <div>
-          <PersonalInfo inputClasses={inputClasses} />
-          <Summary />
-          <Experience inputClasses={inputClasses} />
-          <Education inputClasses={inputClasses} />
-          <Skills skills={skills} />
-
-          {state.moreSections.length > 0 && (
-            <>
-              <h2 className="text-center text-2xl mt-4">Added Sections</h2>
-              {state.moreSections.map((sec) => (
-                <NewField  info={sec} key={sec.id} />
-              ))}
-            </>
-          )}
-
-          <button
-            className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-2 border-dashed border-[#B4C5FF] p-1 text-center text-lg font-semibold text-[#004AC6]"
-            onClick={() => {
-              dispatch(
-                addMoreSection({
-                  id: uuidv4(),
-                  sectionName: "New Section",
-                  body: [],
-                }),
-              );
-            }}
-          >
-            <FaPlus size={15} /> Add Section
-          </button>
-        </div>
+        <PersonalInfo inputClasses={inputClasses} />
+        <Summary />
+        <Experience inputClasses={inputClasses} />
+        <Education inputClasses={inputClasses} />
+        <MoreSections />
+        <button
+          className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-2 border-dashed border-[#B4C5FF] p-1 text-center text-lg font-semibold text-[#004AC6]"
+          onClick={() => {
+            dispatch(
+              addMoreSection({
+                id: uuidv4(),
+                sectionName: "New Section",
+                body: [],
+              }),
+            );
+          }}
+        >
+          <FaPlus size={15} /> Add Section
+        </button>
       </form>
     </>
   );
 }
+
+

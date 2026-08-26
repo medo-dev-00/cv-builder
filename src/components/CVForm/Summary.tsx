@@ -6,7 +6,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Summary() {
-  const state = useSelector((state: RootState) => state.resume);
+  const summary = useSelector((state: RootState) => state.resume.summary);
   const dispatch = useDispatch();
   const [showSummary, setShowSummary] = useState<boolean>(false);
 
@@ -31,7 +31,7 @@ export default function Summary() {
         id="summary"
         className="h-70 w-full resize-none bg-white p-4 focus:outline-none"
         placeholder="Results-oriented Engineering Executive with a proven track..."
-        value={state.summary}
+        value={summary}
         onChange={(e) => {
           dispatch(updateSummary(e.target.value));
         }}

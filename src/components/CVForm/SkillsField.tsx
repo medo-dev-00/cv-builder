@@ -12,7 +12,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
 // Skill Fields
-export default function Skills({ skills }: { skills: Single[] }) {
+export default function Skills() {
+  const skills = useSelector((state: RootState) => state.resume.skills);
   const dispatch = useDispatch();
 
   const [showSkills, setShowSkills] = useState<boolean>(false);
