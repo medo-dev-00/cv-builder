@@ -20,7 +20,6 @@ export interface Experience {
   points: string[];
 }
 
-export type TemplateType = "simple" | "minimalist" | "classicOne";
 export type ResumeState = {
   color: string;
 
@@ -44,7 +43,7 @@ export type ResumeState = {
   languages: Single[];
 
   certifications: Single[];
-  template: TemplateType;
+  template: string;
   moreSections: NewSection[];
 };
 
@@ -108,8 +107,9 @@ const resumeSlice = createSlice({
     setResume: (state, action: PayloadAction<ResumeState>) => {
       return action.payload;
     },
-    setTemplate: (state, action: PayloadAction<TemplateType>) => {
+    setTemplate: (state, action: PayloadAction<string>) => {
       state.template = action.payload;
+      localStorage.setItem("userInfo", JSON.stringify(state));
     },
     updatePersonalInfo: (
       state,

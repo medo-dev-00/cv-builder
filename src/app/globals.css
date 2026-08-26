@@ -1,9 +1,12 @@
 @import "tailwindcss";
-
+html {
+  scroll-behavior: smooth;
+}
 body {
   font-family: var(--font-open-sans);
 }
 
-.template {
-  font-family: var(--font-inter);
+
+.classic {
+  font-family: "Times New Roman", Times, serif;
 }

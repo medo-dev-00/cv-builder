@@ -10,8 +10,8 @@ export default function PersonalInfo({
 }: {
   inputClasses: string;
 }) {
-  const personalInfo = useSelector(
-    (state: RootState) => state.resume.personalInfo,
+  const { personalInfo, template } = useSelector(
+    (state: RootState) => state.resume,
   );
   const dispatch = useDispatch();
   // State — collapsible section visibility
@@ -51,37 +51,43 @@ export default function PersonalInfo({
             }}
           />
         </div>
-        <div className="flex-1 basis-72 mt-2">
-          <label className="text-sm font-semibold" htmlFor="website">
-            Job Title
-          </label>
-          <input
-            type="text"
-            name="job"
-            id="job"
-            className={inputClasses}
-            value={personalInfo.job}
-            onChange={(e) => {
-              dispatch(updatePersonalInfo({ job: e.target.value }));
-            }}
-          />
-        </div>
+        {(template === "simple" || template === "minimalist") && (
+          <>
+            {template === "minimalist" && (
+              <div className="flex-1 basis-72 mt-2">
+                <label className="text-sm font-semibold" htmlFor="website">
+                  Job Title
+                </label>
+                <input
+                  type="text"
+                  name="job"
+                  id="job"
+                  className={inputClasses}
+                  value={personalInfo.job}
+                  onChange={(e) => {
+                    dispatch(updatePersonalInfo({ job: e.target.value }));
+                  }}
+                />
+              </div>
+            )}
+            <div className="flex-1 basis-72 my-2">
+              <label className="text-sm font-semibold" htmlFor="address">
+                Address
+              </label>
+              <input
+                type="text"
+                name="address"
+                id="address"
+                className={inputClasses}
+                value={personalInfo.address}
+                onChange={(e) => {
+                  dispatch(updatePersonalInfo({ address: e.target.value }));
+                }}
+              />
+            </div>
+          </>
+        )}
 
-        <div className="flex-1 basis-72 my-2">
-          <label className="text-sm font-semibold" htmlFor="address">
-            Address
-          </label>
-          <input
-            type="text"
-            name="address"
-            id="address"
-            className={inputClasses}
-            value={personalInfo.address}
-            onChange={(e) => {
-              dispatch(updatePersonalInfo({ address: e.target.value }));
-            }}
-          />
-        </div>
         <div className="flex-1 basis-72 my-2">
           <label className="text-sm font-semibold" htmlFor="phoneNumber">
             Phone Number
