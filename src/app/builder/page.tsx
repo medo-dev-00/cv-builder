@@ -1,173 +1,166 @@
 "use client";
 
-import { jsPDF } from "jspdf";
-import { useRef, useState } from "react";
-import { FaChevronDown, FaFileDownload } from "react-icons/fa";
-import { toPng } from "html-to-image";
+import { useRef } from "react";
 
-import CVForm from "@/components/CVForm";
+import { FaFileDownload } from "react-icons/fa";
+
+import CVForm from "@/components/builder/CVForm";
+
 import Simple from "@/templates/Simple";
+import Minimalist from "@/templates/Minimalist";
+import ClassicOne from "@/templates/ClassicOne";
 
-type Quality = "low" | "medium" | "large";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { TemplateType } from "@/lib/features/resumeSlice";
+import BuilderHeader from "@/components/builder/BuilderHeader";
 
-const qualitySettings = {
-  low: {
-    label: "Low",
-    pixelRatio: 2,
-  },
-  medium: {
-    label: "Medium",
-    pixelRatio: 4,
-  },
-  large: {
-    label: "Large",
-    pixelRatio: 6,
-  },
-};
+// Builder page — form editor, live preview, and PDF export
 
 export default function Builder() {
-  const [quality, setQuality] = useState<Quality>("medium");
+  const resumeData = useSelector((state: RootState) => state.resume);
 
-  const [open, setOpen] = useState(false);
+  const fullName = resumeData.personalInfo.fullName
+    .split(" ")
+    .join("")
+    .toLowerCase();
+
+  const template: TemplateType = resumeData.template;
+  const templates = {
+    simple: Simple,
+    minimalist: Minimalist,
+    classicOne: ClassicOne,
+  };
+  const Template = templates[template];
 
   const ref = useRef<HTMLDivElement>(null);
+
+  // Handlers
+
+  // Capture preview as PNG, embed full-page in A4 PDF, trigger download
 
   const handleDownloadPDF = async () => {
     const element = ref.current;
 
     if (!element) return;
 
-    const dataUrl = await toPng(element, {
-      pixelRatio: qualitySettings[quality].pixelRatio,
-      backgroundColor: "#ffffff",
-      cacheBust: true,
-    });
+    try {
+      // Get Tailwind/global styles from the current page
+      const styles = Array.from(document.styleSheets)
+        .flatMap((sheet) => {
+          try {
+            return Array.from(sheet.cssRules).map((rule) => rule.cssText);
+          } catch {
+            return [];
+          }
+        })
+        .join("\n");
 
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-      compress: true,
-    });
+      const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8" />
 
-    pdf.addImage(dataUrl, "PNG", 0, 0, 210, 297, undefined, "FAST");
+              <style>
+                ${styles}
 
-    pdf.save("CV.pdf");
+                @page {
+                  size: A4;
+                  margin: 0;
+                }
+
+                html,
+                body {
+                  margin: 0;
+                  padding: 0;
+                  background: white;
+                }
+
+                * {
+                  box-sizing: border-box;
+                }
+              </style>
+            </head>
+
+            <body>
+              ${element.outerHTML}
+            </body>
+            </html>
+            `;
+
+      const response = await fetch("/api/generate-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ html }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+
+        throw new Error(error.error || "Failed to generate PDF");
+      }
+
+      const blob = await response.blob();
+
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${fullName}-cv.pdf`;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+    }
   };
 
+  // Render — two-column layout: editable form (left) and live preview (right)
 
   return (
     <main className="flex h-dvh">
       {/* Form */}
-      <section className="flex-1 flex flex-col bg-[#F8F9FF] shadow-2xl border-r border-gray-300">
+
+      <section className="flex flex-1 flex-col border-r border-gray-300 bg-[#F8F9FF] shadow-2xl">
         <div className="flex-1 overflow-hidden">
           <CVForm />
         </div>
 
         {/* Download */}
-        <div className="ml-auto p-4 border-t border-gray-200">
-          <div className="relative inline-flex items-center bg-white border border-gray-300 rounded-lg shadow-sm text-[#0D47A1]">
-            {/* Download */}
-            <button
-              type="button"
-              onClick={handleDownloadPDF}
-              className="
-        inline-flex
-        items-center
-        justify-center
-        gap-2
-        px-4
-        py-2.5
-        text-sm
-        font-medium
-        hover:bg-gray-50
-        rounded-l-lg
-        focus:outline-none
-      "
-            >
-              <FaFileDownload />
-              Download PDF
-            </button>
 
-            {/* Dropdown button */}
-            <button
-              type="button"
-              onClick={() => setOpen((prev) => !prev)}
-              className="
-        inline-flex
-        items-center
-        justify-center
-        px-3
-        py-2.5
-        border-l
-        border-gray-300
-        hover:bg-gray-50
-        rounded-r-lg
-        focus:outline-none
-      "
-            >
-              <FaChevronDown
-                className={`w-3 h-3 transition-transform ${
-                  open ? "rotate-180" : ""
-                }`}
-              />
-            </button>
+        <div className="border-t border-gray-200 p-4">
+          {/* Split button: download action + quality picker toggle */}
 
-            {/* Dropdown */}
-            {open && (
-              <div
-                className="
-          absolute
-          bottom-full
-          right-0
-          mb-2
-          z-50
-          w-44
-          bg-white
-          border
-          border-gray-200
-          rounded-lg
-          shadow-lg
-          overflow-hidden
-        "
-              >
-                <ul className="p-2 text-sm text-gray-700 font-medium">
-                  {(Object.keys(qualitySettings) as Quality[]).map((item) => (
-                    <li key={item}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setQuality(item);
-                          setOpen(false);
-                        }}
-                        className={`
-                  flex
-                  items-center
-                  w-full
-                  px-3
-                  py-2
-                  rounded-md
-                  hover:bg-gray-100
-                  ${quality === item ? "bg-blue-50 text-[#0D47A1]" : ""}
-                `}
-                      >
-                        {qualitySettings[item].label}
-
-                        {quality === item && <span className="ml-auto">✓</span>}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+          <button
+            type="button"
+            onClick={handleDownloadPDF}
+            className="relative m-auto w-fit flex items-center rounded-lg border border-gray-300 bg-white text-[#0D47A1] shadow-sm px-4 py-2 gap-2"
+          >
+            <FaFileDownload />
+            Download PDF
+          </button>
         </div>
       </section>
 
       {/* Preview */}
-      <section className="bg-[#E5EEFF] flex-3 h-full flex justify-center items-center overflow-auto">
-        <div ref={ref} className="w-198.5 h-[1123px] bg-white origin-top">
-          <Simple />
+
+      {/* A4-sized canvas; ref here is the PDF capture target */}
+
+      <section className="h-full flex-3 overflow-auto bg-[#E5EEFF]">
+        <BuilderHeader />
+        <div className="flex justify-center  mt-10 ">
+          <div
+            ref={ref}
+            className="h-280.75 w-198.5 origin-top bg-white font-inter"
+          >
+            <Template />
+          </div>
         </div>
       </section>
     </main>

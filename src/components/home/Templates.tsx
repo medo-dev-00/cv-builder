@@ -1,0 +1,81 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+
+import simple from "@/thumbnails/simple.jpg";
+import minimalist from "@/thumbnails/minimalist.jpg";
+import classicOne from "@/thumbnails/classic_one.jpg";
+import { useDispatch } from "react-redux";
+import { setTemplate } from "@/lib/features/resumeSlice";
+
+const templates = [
+  {
+    name: "simple",
+    image: simple,
+  },
+  {
+    name: "minimalist",
+    image: minimalist,
+  },
+  {
+    name: "classicOne",
+    image: classicOne,
+  },
+];
+
+export default function Templates() {
+  const dispatch = useDispatch();
+
+  return (
+    <section id="templates" className="scroll-mt-20 py-24 lg:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+          <div>
+            <span className="text-sm font-semibold uppercase tracking-wider text-[#0D47A1]">
+              Templates
+            </span>
+
+            <h2 className="mt-3 text-4xl font-bold tracking-tight">
+              Start with a professional design.
+            </h2>
+
+            <p className="mt-4 max-w-xl text-gray-600">
+              Clean templates designed to make your experience easy to read and
+              hard to ignore.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {templates.map((template, index) => (
+            <div
+              key={index}
+              className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5"
+            >
+              <div className="aspect-4/5 bg-[#EEF3FC] p-4">
+                <Image src={template.image} alt={template.name} key={index} />
+              </div>
+
+              <div className="flex items-center justify-between p-5">
+                <div>
+                  <h3 className="font-semibold capitalize">
+                    {template.name} Template
+                  </h3>
+                </div>
+
+                <Link
+                  href="/builder"
+                  className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-[#0D47A1] transition hover:bg-[#0D47A1] hover:text-white"
+                  onClick={() => dispatch(setTemplate(template.name))}
+                >
+                  Use template
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

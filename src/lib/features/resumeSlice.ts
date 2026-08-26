@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// --- Types ---
+
 export interface Education {
   id: string;
   degree: string;
@@ -7,6 +9,7 @@ export interface Education {
   startDate: string;
   endDate: string;
   points: string[];
+  gpa?: string;
 }
 export interface Experience {
   id: string;
@@ -16,11 +19,13 @@ export interface Experience {
   endDate: string;
   points: string[];
 }
+
 export type ResumeState = {
   color: string;
 
   personalInfo: {
     fullName: string;
+    job?: string;
     email: string;
     phone: string;
     address: string;
@@ -38,16 +43,37 @@ export type ResumeState = {
   languages: Single[];
 
   certifications: Single[];
+  template: string;
+  moreSections: NewSection[];
 };
 
 export type Single = {
   id: string;
   name: string;
 };
+
+export interface NewSection {
+  id: string;
+  sectionName: string;
+  body: Single[];
+}
+
+export interface NewType extends NewSection {
+  type: "ADD" | "DELETE";
+}
+
+export type Body = {
+  id: string;
+  body: Single;
+  type: "ADD" | "DELETE";
+};
+// --- Initial state ---
+
 const initialState: ResumeState = {
   color: "#8055a2",
   personalInfo: {
     fullName: "",
+    job: "",
     email: "",
     phone: "",
     address: "",
@@ -65,17 +91,25 @@ const initialState: ResumeState = {
   languages: [],
 
   certifications: [],
+  template: "simple",
+  moreSections: [],
 };
 
 const resumeSlice = createSlice({
   name: "resume",
   initialState,
   reducers: {
+    // Theme
     setColor: (state, action: PayloadAction<Partial<ResumeState["color"]>>) => {
       state.color = action.payload;
     },
+    // Bulk replace — used when hydrating from localStorage
     setResume: (state, action: PayloadAction<ResumeState>) => {
       return action.payload;
+    },
+    setTemplate: (state, action: PayloadAction<string>) => {
+      state.template = action.payload;
+      localStorage.setItem("userInfo", JSON.stringify(state));
     },
     updatePersonalInfo: (
       state,
@@ -87,13 +121,106 @@ const resumeSlice = createSlice({
       };
     },
 
+    // Experience
     addExperience: (state, action: PayloadAction<Experience>) => {
       state.experience.push(action.payload);
     },
     addEducation: (state, action: PayloadAction<Education>) => {
       state.education.push(action.payload);
     },
+    addEducationPoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        point: string;
+      }>,
+    ) => {
+      const education = state.education.find(
+        (edu) => edu.id === action.payload.id,
+      );
+      if (education) {
+        education.points.push(action.payload.point);
+      }
+    },
+    updateEducationPoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        pointIndex: number;
+        value: string;
+      }>,
+    ) => {
+      const education = state.education.find(
+        (edu) => edu.id === action.payload.id,
+      );
 
+      if (education) {
+        education.points[action.payload.pointIndex] = action.payload.value;
+      }
+    },
+
+    removeEducationPoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        pointIndex: number;
+      }>,
+    ) => {
+      const education = state.education.find(
+        (edu) => edu.id === action.payload.id,
+      );
+
+      if (education) {
+        education.points.splice(action.payload.pointIndex, 1);
+      }
+    },
+    addExperiencePoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        point: string;
+      }>,
+    ) => {
+      const experience = state.experience.find(
+        (exp) => exp.id === action.payload.id,
+      );
+      if (experience) {
+        experience.points.push(action.payload.point);
+      }
+    },
+    updateExperiencePoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        pointIndex: number;
+        value: string;
+      }>,
+    ) => {
+      const experience = state.experience.find(
+        (exp) => exp.id === action.payload.id,
+      );
+
+      if (experience) {
+        experience.points[action.payload.pointIndex] = action.payload.value;
+      }
+    },
+
+    removeExperiencePoint: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        pointIndex: number;
+      }>,
+    ) => {
+      const experience = state.experience.find(
+        (exp) => exp.id === action.payload.id,
+      );
+
+      if (experience) {
+        experience.points.splice(action.payload.pointIndex, 1);
+      }
+    },
+    // List items (skills, languages, certifications)
     setSkills: (state, action: PayloadAction<Single>) => {
       state.skills.push(action.payload);
     },
@@ -163,24 +290,74 @@ const resumeSlice = createSlice({
         (cert) => cert.id !== action.payload,
       );
     },
+    addMoreSection: (state, action: PayloadAction<NewSection>) => {
+      state.moreSections.push(action.payload);
+    },
+    updateSection: (state, action: PayloadAction<NewType>) => {
+      switch (action.payload.type) {
+        case "ADD": {
+          const section = state.moreSections.find(
+            (sec) => sec.id === action.payload.id,
+          );
+
+          if (section) {
+            section.sectionName = action.payload.sectionName;
+          }
+          break;
+        }
+        case "DELETE": {
+          state.moreSections = state.moreSections.filter(
+            (sec) => sec.id !== action.payload.id,
+          );
+          break;
+        }
+      }
+    },
+    updateSectionBody: (state, action: PayloadAction<Body>) => {
+      const { id, body, type } = action.payload;
+
+      const section = state.moreSections.find((section) => section.id === id);
+
+      if (!section) return;
+
+      if (type === "ADD") {
+        section.body.push(body);
+      }
+
+      if (type === "DELETE") {
+        section.body = section.body.filter((item) => item.id !== body.id);
+      }
+    },
   },
 });
 
 export const {
-  updatePersonalInfo,
-  updateSummary,
-  addExperience,
-  removeExperience,
   addEducation,
+  addEducationPoint,
+  addExperience,
+  addExperiencePoint,
+  addMoreSection,
+  removeCertificate,
   removeEducation,
-  setSkills,
-  setLanguages,
-  setCertifications,
-  updateExperience,
-  removeSkill,
+  removeEducationPoint,
+  removeExperience,
+  removeExperiencePoint,
   removeLanguage,
-  setResume,
+  removeSkill,
+  setCertifications,
   setColor,
+  setLanguages,
+  setResume,
+  setSkills,
+  setTemplate,
+  updateEducation,
+  updateEducationPoint,
+  updateExperience,
+  updateExperiencePoint,
+  updatePersonalInfo,
+  updateSection,
+  updateSectionBody,
+  updateSummary,
 } = resumeSlice.actions;
 
 export default resumeSlice.reducer;
