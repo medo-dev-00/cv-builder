@@ -134,7 +134,7 @@ export default function CVForm() {
         initial={{ x: -300 }}
         animate={{ x: 0 }}
         onSubmit={(e) => e.preventDefault()}
-        className="flex-1 min-w-100 h-[80vh] overflow-auto p-4"
+        className="flex-1 min-w-100 xl:h-[80vh] max-xl:pb-4 overflow-auto p-4"
       >
         <PersonalInfo inputClasses={inputClasses} />
         <Summary />
