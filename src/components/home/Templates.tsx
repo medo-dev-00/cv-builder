@@ -1,5 +1,5 @@
 "use client";
-
+import { motion } from "motion/react";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 
@@ -51,12 +51,26 @@ export default function Templates() {
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {templates.map((template: Template) => (
-            <div
+          {templates.map((template: Template, index) => (
+            <motion.div
               key={template.name}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.6,
+                delay: index * 0.12,
+                ease: "easeIn",
+              }}
+              viewport={{
+                once: true,
+                amount: 0.15,
+              }}
               className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5"
             >
-              <div className="aspect-4/5 bg-[#EEF3FC] p-4">
+              <motion.div className="aspect-5 bg-[#EEF3FC] p-4">
                 <Image
                   src={template.image}
                   alt={`${template.name} template`}
@@ -64,7 +78,7 @@ export default function Templates() {
                   height={625}
                   className="h-full w-full object-contain"
                 />
-              </div>
+              </motion.div>
 
               <div className="flex items-center justify-between p-5">
                 <div>
@@ -81,7 +95,7 @@ export default function Templates() {
                   Use template
                 </Link>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

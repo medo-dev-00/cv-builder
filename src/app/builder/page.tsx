@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import BuilderHeader from "@/components/builder/BuilderHeader";
 import { TemplateType } from "@/lib/features/resumeSlice";
+import { motion } from "motion/react";
 
 // Builder page — form editor, live preview, and PDF export
 
@@ -124,10 +125,14 @@ export default function Builder() {
   // Render — two-column layout: editable form (left) and live preview (right)
 
   return (
-    <main className="flex h-dvh">
+    <main className="flex max-xl:flex-col max-h-dvh bg-[#E5EEFF]">
       {/* Form */}
 
-      <section className="flex flex-1 flex-col border-r border-gray-300 bg-[#F8F9FF] shadow-2xl">
+      <motion.section
+        initial={{ x: -500 }}
+        animate={{ x: 0 }}
+        className="flex flex-1 flex-col border-r border-gray-300 bg-[#F8F9FF] shadow-2xl"
+      >
         <div className="flex-1 overflow-hidden">
           <CVForm />
         </div>
@@ -146,22 +151,26 @@ export default function Builder() {
             Download PDF
           </button>
         </div>
-      </section>
+      </motion.section>
 
       {/* Preview */}
 
       {/* A4-sized canvas; ref here is the PDF capture target */}
 
-      <section className="h-full flex-3 overflow-auto bg-[#E5EEFF]">
+      <section className="h-full overflow-auto flex-3 overflow-auto bg-[#E5EEFF]">
         <BuilderHeader />
-        <div className="flex justify-center  mt-10 ">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="flex justify-center  mt-10 "
+        >
           <div
             ref={ref}
             className="h-280.75 w-198.5 origin-top bg-white font-inter"
           >
             <Template />
           </div>
-        </div>
+        </motion.div>
       </section>
     </main>
   );

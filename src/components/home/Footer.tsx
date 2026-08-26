@@ -11,12 +11,12 @@ export default function Footer() {
           </div>
 
           <span className="font-bold">
-            Live<span className="text-[#0D47A1]"> CV</span>
+            Now<span className="text-[#0D47A1]"> CV</span>
           </span>
         </Link>
 
         <p className="text-sm text-gray-500">
-          © {new Date().getFullYear()} CVBuilder. All rights reserved to{" "}
+          © {new Date().getFullYear()} Now CV. All rights reserved to{" "}
           <a
             href="https://github.com/medo-dev-00"
             className="text-blue-500 font-semibold"

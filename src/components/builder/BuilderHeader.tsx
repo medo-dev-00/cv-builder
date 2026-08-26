@@ -2,6 +2,7 @@
 
 import { setTemplate } from "@/lib/features/resumeSlice";
 import { AppDispatch, RootState } from "@/lib/store";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +24,11 @@ export default function BuilderHeader() {
     templates.find((item) => item.id === template) ?? templates[0];
 
   return (
-    <nav className="flex items-center justify-between bg-[#F8F9FF] px-6 py-3">
+    <motion.nav
+      initial={{ y: -50 }}
+      animate={{ y: 0 }}
+      className="flex items-center justify-between bg-[#F8F9FF] px-6 py-3"
+    >
       <h1 className="text-lg font-semibold text-[#1e1e1e]">Resume Builder</h1>
       <div className="flex items-center gap-2">
         <span className="text-sm">Choose Template: </span>
@@ -95,6 +100,6 @@ export default function BuilderHeader() {
           )}
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }

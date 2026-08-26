@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { BsArrowRight } from "react-icons/bs";
 
@@ -27,7 +30,19 @@ export default function Steps() {
       id="how-it-works"
       className="scroll-mt-20 border-y border-gray-200 bg-white py-24 lg:py-32"
     >
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <motion.div
+        initial={{ x: -600, opacity: 0 }}
+        whileInView={{
+          x: 0,
+          opacity: 1,
+          transition: {
+            duration: 0.6,
+            ease: "easeOut",
+          },
+        }}
+        viewport={{ once: true, amount: 0.2 }}
+        className="mx-auto max-w-7xl px-6 lg:px-8"
+      >
         <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <div>
             <span className="text-sm font-semibold uppercase tracking-wider text-[#0D47A1]">
@@ -53,9 +68,26 @@ export default function Steps() {
           </div>
 
           <div className="space-y-4">
-            {steps.map((step) => (
-              <div
+            {steps.map((step, index) => (
+              <motion.div
                 key={step.number}
+                initial={{
+                  x: 500,
+                  opacity: 0,
+                }}
+                whileInView={{
+                  x: 0,
+                  opacity: 1,
+                  transition: {
+                    duration: 0.45,
+                    delay: index * 0.15,
+                    ease: "easeOut",
+                  },
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.2,
+                }}
                 className="flex gap-5 rounded-2xl border border-gray-200 bg-[#F8F9FF] p-6"
               >
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#0D47A1] text-sm font-bold text-white">
@@ -69,11 +101,11 @@ export default function Steps() {
                     {step.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

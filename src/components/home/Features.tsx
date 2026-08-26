@@ -1,5 +1,7 @@
+"use client";
 import { FaBolt, FaDownload, FaPalette, FaStar } from "react-icons/fa";
 import { FiLayout, FiMousePointer } from "react-icons/fi";
+import { motion } from "framer-motion";
 const features = [
   {
     icon: FiMousePointer,
@@ -42,7 +44,12 @@ export default function Features() {
   return (
     <section id="features" className="scroll-mt-20 py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
+        <motion.div
+          initial={{ y: 40, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          className="mx-auto max-w-2xl text-center"
+        >
           <span className="text-sm font-semibold uppercase tracking-wider text-[#0D47A1]">
             Everything you need
           </span>
@@ -55,15 +62,25 @@ export default function Features() {
             Everything is designed to help you focus on your experience instead
             of fighting with formatting.
           </p>
-        </div>
+        </motion.div>
 
         <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature) => {
+          {features.map((feature, index) => {
             const Icon = feature.icon;
 
             return (
-              <div
+              <motion.div
                 key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  transition: {
+                    duration: 0.25,
+                    delay: index * 0.08,
+                  },
+                }}
+                viewport={{ once: true, amount: 0.2 }}
                 className="group rounded-2xl border border-gray-200 bg-white p-7"
               >
                 <div className="flex size-11 items-center justify-center rounded-xl bg-blue-50 text-[#0D47A1]">
@@ -75,7 +92,7 @@ export default function Features() {
                 <p className="mt-2 text-sm leading-6 text-gray-600">
                   {feature.description}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
         </div>

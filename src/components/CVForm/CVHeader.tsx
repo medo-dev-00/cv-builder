@@ -1,5 +1,5 @@
-// Header bar — profile completion progress and accent color picker
 
+// Header bar — profile completion progress and accent color picker
 import { setColor } from "@/lib/features/resumeSlice";
 import Link from "next/link";
 import { useState } from "react";
@@ -25,7 +25,10 @@ export default function Progress({
     "#168F8B",
   ];
   return (
-    <div className="p-8 shadow shadow-gray-300">
+    <div
+     
+      className="p-8 shadow shadow-gray-300"
+    >
       <h2 className="flex gap-4 text-3xl font-semibold mb-2">
         <Link href={"/"} className="hover:-translate-x-px transition-all">
           <BiLeftArrowAlt size={35} />

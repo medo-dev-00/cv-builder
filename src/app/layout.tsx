@@ -16,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Live CV",
+  title: "Now CV",
   description: "Create and build your professional CV",
   icons: {
     icon: favicon.src,

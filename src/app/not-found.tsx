@@ -6,7 +6,7 @@ export default function NotFound() {
     <main className="flex min-h-screen items-center justify-center bg-[#F8F9FF] px-6">
       <div className="text-center">
         <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-[#0D47A1]">
-          Live CV
+          Now CV
         </p>
 
         <h1 className="text-[120px] font-bold leading-none text-[#0D47A1]">

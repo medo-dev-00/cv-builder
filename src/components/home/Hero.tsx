@@ -1,17 +1,17 @@
+"use client";
 import Link from "next/link";
 import { BiCheck } from "react-icons/bi";
 import { BsArrowRight } from "react-icons/bs";
-
+import { motion } from "motion/react";
 export default function Hero() {
   return (
     <section className="relative overflow-hidden">
-      {/* Background decorations */}
-      <div className="pointer-events-none absolute -left-40 top-20 size-96 rounded-full bg-blue-200/30 blur-3xl" />
-      <div className="pointer-events-none absolute -right-40 top-10 size-96 rounded-full bg-indigo-200/30 blur-3xl" />
-
       <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 pb-24 pt-20 lg:grid-cols-2 lg:px-8 lg:pb-32 lg:pt-28">
         {/* Hero content */}
-        <div>
+        <motion.div
+          initial={{ x: -500 }}
+          animate={{ x: 0, transition: { duration: 0.3 } }}
+        >
           <h1 className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-[#111827] sm:text-6xl lg:text-7xl">
             Create a CV that{" "}
             <span className="text-[#0D47A1]">gets noticed.</span>
@@ -38,25 +38,37 @@ export default function Hero() {
               "No design skills required",
               "Real-time preview",
               "PDF export",
-            ].map((item) => (
-              <div
+            ].map((item, index) => (
+              <motion.div
                 key={item}
+                initial={{ y: -20, opacity: 0 }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                  transition: {
+                    delay: 0.2 + index * 0.15,
+                    duration: 0.1,
+                  },
+                }}
                 className="flex items-center gap-2 text-sm text-gray-500"
               >
                 <span className="flex size-5 items-center justify-center rounded-full bg-blue-100 text-[#0D47A1]">
                   <BiCheck size={12} strokeWidth={3} />
                 </span>
+
                 {item}
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* CV Preview */}
         <div className="relative mx-auto w-full max-w-xl lg:ml-auto">
-          <div className="absolute -inset-5 rounded-[2rem]" />
-
-          <div className="relative rotate-1 rounded-2xl border border-gray-200 bg-white p-3 shadow-2xl shadow-blue-900/5">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1, transition: { delay: 0.1 } }}
+            className="relative rotate-1 rounded-2xl border border-gray-200 bg-white p-3 shadow-2xl shadow-blue-900/5"
+          >
             <div className="rounded-xl border border-gray-100 bg-white p-7 sm:p-9">
               {/* CV header */}
               <div className="border-b border-gray-200 pb-5">
@@ -125,10 +137,15 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Floating card */}
-          <div className="absolute -bottom-6 -left-6 hidden rounded-xl border border-gray-200 bg-white p-4 shadow-md sm:block">
+          <motion.div
+            initial={{ x: 800, opacity: 0 }}
+            animate={{ x: 0, opacity: 1, transition: { delay: 0.11 } }}
+            
+            className="absolute -bottom-6 -left-6 hidden rounded-xl border border-gray-200 bg-white p-4 shadow-md sm:block"
+          >
             <div className="flex items-center gap-3">
               <div className="flex size-10 items-center justify-center rounded-lg bg-green-50 text-green-600">
                 <BiCheck size={20} />
@@ -141,7 +158,7 @@ export default function Hero() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

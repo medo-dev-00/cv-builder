@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
-
+import { motion } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import { setResume, addMoreSection } from "@/lib/features/resumeSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -130,7 +130,9 @@ export default function CVForm() {
   return (
     <>
       <Progress percentage={percentage} color={color} />
-      <form
+      <motion.form
+        initial={{ x: -300 }}
+        animate={{ x: 0 }}
         onSubmit={(e) => e.preventDefault()}
         className="flex-1 min-w-100 h-[80vh] overflow-auto p-4"
       >
@@ -153,9 +155,7 @@ export default function CVForm() {
         >
           <FaPlus size={15} /> Add Section
         </button>
-      </form>
+      </motion.form>
     </>
   );
 }
-
-
