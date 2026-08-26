@@ -5,6 +5,26 @@ import Hero from "@/components/home/Hero";
 import Stats from "@/components/home/Stats";
 import Steps from "@/components/home/Steps";
 import Templates from "@/components/home/Templates";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Free CV Builder - Create a Professional Resume",
+  description:
+    "Build your professional CV online with Now CV. Choose a modern resume template, customize your information, and download your CV as a PDF.",
+  alternates: {
+    canonical: "/",
+  },
+};const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Now CV",
+  url: "https://nowcv.com",
+  description:
+    "Online CV and resume builder for creating professional resumes.",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+};
+
 
 export default function Home() {
   return (
@@ -16,6 +36,12 @@ export default function Home() {
       <Steps />
       <Templates />
       <Footer />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd),
+        }}
+      />
     </main>
   );
 }

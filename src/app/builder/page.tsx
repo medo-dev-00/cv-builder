@@ -17,7 +17,6 @@ import { TemplateType } from "@/lib/features/resumeSlice";
 import { motion } from "motion/react";
 
 // Builder page — form editor, live preview, and PDF export
-
 export default function Builder() {
   const resumeData = useSelector((state: RootState) => state.resume);
 
@@ -139,13 +138,13 @@ export default function Builder() {
 
         {/* Download */}
 
-        <div className="border-t border-gray-200 p-4">
+        <div className="border-t border-gray-300 p-4">
           {/* Split button: download action + quality picker toggle */}
 
           <button
             type="button"
             onClick={handleDownloadPDF}
-            className="relative m-auto w-fit flex items-center rounded-lg border border-gray-300 bg-white text-[#0D47A1] shadow-sm px-4 py-2 gap-2"
+            className="relative m-auto w-fit flex items-center rounded-lg border border-gray-300 bg-white text-[#0D47A1] shadow-sm px-4 py-2 gap-2 cursor-pointer"
           >
             <FaFileDownload />
             Download PDF
@@ -157,7 +156,7 @@ export default function Builder() {
 
       {/* A4-sized canvas; ref here is the PDF capture target */}
 
-      <section className="h-full overflow-auto flex-3 overflow-auto bg-[#E5EEFF] py-4 xl:p-0">
+      <section className="h-full flex-3 overflow-auto bg-[#E5EEFF] py-4 xl:p-0">
         <BuilderHeader />
         <motion.div
           initial={{ scale: 0 }}
