@@ -1,6 +1,11 @@
-import { chromium } from "playwright";
+import chromium from "@sparticuz/chromium";
+import puppeteer from "puppeteer-core";
+
+export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  let browser;
+
   try {
     const { html } = await request.json();
 
@@ -8,45 +13,49 @@ export async function POST(request: Request) {
       return Response.json({ error: "HTML is required" }, { status: 400 });
     }
 
-    const browser = await chromium.launch();
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: true,
+    });
 
-    try {
-      const page = await browser.newPage({
-        viewport: {
-          width: 794,
-          height: 1123,
-        },
-        deviceScaleFactor: 1,
-      });
+    const page = await browser.newPage();
 
-      await page.setContent(html, {
-        waitUntil: "networkidle",
-      });
+    await page.setViewport({
+      width: 794,
+      height: 1123,
+      deviceScaleFactor: 1,
+    });
 
-      await page.emulateMedia({
-        media: "print",
-      });
+    await page.setContent(html, {
+      waitUntil: "load",
+    });
 
-      const pdf = await page.pdf({
-        format: "A4",
-        printBackground: true,
-        margin: {
-          top: "0",
-          right: "0",
-          bottom: "0",
-          left: "0",
-        },
-      });
+    await page.emulateMediaType("print");
 
-      return new Response(new Uint8Array(pdf), {
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      preferCSSPageSize: true,
+      margin: {
+        top: "0",
+        right: "0",
+        bottom: "0",
+        left: "0",
+      },
+    });
+
+    return new Response(
+      new Blob([pdf as unknown as BlobPart], {
+        type: "application/pdf",
+      }),
+      {
         headers: {
           "Content-Type": "application/pdf",
           "Content-Disposition": 'attachment; filename="CV.pdf"',
         },
-      });
-    } finally {
-      await browser.close();
-    }
+      },
+    );
   } catch (error) {
     console.error("PDF ERROR:", error);
 
@@ -54,7 +63,13 @@ export async function POST(request: Request) {
       {
         error: error instanceof Error ? error.message : "Unknown PDF error",
       },
-      { status: 500 },
+      {
+        status: 500,
+      },
     );
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 }
