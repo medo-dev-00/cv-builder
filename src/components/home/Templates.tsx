@@ -1,15 +1,15 @@
 "use client";
 
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 
 import simple from "@/thumbnails/simple.jpg";
 import minimalist from "@/thumbnails/minimalist.jpg";
 import classicOne from "@/thumbnails/classic_one.jpg";
 import { useDispatch } from "react-redux";
-import { setTemplate } from "@/lib/features/resumeSlice";
+import { setTemplate, TemplateType } from "@/lib/features/resumeSlice";
 
-const templates = [
+const templates: Template[] = [
   {
     name: "simple",
     image: simple,
@@ -23,7 +23,10 @@ const templates = [
     image: classicOne,
   },
 ];
-
+type Template = {
+  name: TemplateType;
+  image: StaticImageData;
+};
 export default function Templates() {
   const dispatch = useDispatch();
 
@@ -48,13 +51,19 @@ export default function Templates() {
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {templates.map((template, index) => (
+          {templates.map((template: Template) => (
             <div
-              key={index}
+              key={template.name}
               className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5"
             >
               <div className="aspect-4/5 bg-[#EEF3FC] p-4">
-                <Image src={template.image} alt={template.name} key={index} />
+                <Image
+                  src={template.image}
+                  alt={`${template.name} template`}
+                  width={500}
+                  height={625}
+                  className="h-full w-full object-contain"
+                />
               </div>
 
               <div className="flex items-center justify-between p-5">

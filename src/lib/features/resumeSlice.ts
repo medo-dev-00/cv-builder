@@ -43,7 +43,7 @@ export type ResumeState = {
   languages: Single[];
 
   certifications: Single[];
-  template: string;
+  template: TemplateType;
   moreSections: NewSection[];
 };
 
@@ -62,11 +62,13 @@ export interface NewType extends NewSection {
   type: "ADD" | "DELETE";
 }
 
-export type Body = {
+type Body = {
   id: string;
   body: Single;
   type: "ADD" | "DELETE";
 };
+
+export type TemplateType = "simple" | "minimalist" | "classicOne";
 // --- Initial state ---
 
 const initialState: ResumeState = {
@@ -107,7 +109,7 @@ const resumeSlice = createSlice({
     setResume: (state, action: PayloadAction<ResumeState>) => {
       return action.payload;
     },
-    setTemplate: (state, action: PayloadAction<string>) => {
+    setTemplate: (state, action: PayloadAction<TemplateType>) => {
       state.template = action.payload;
       localStorage.setItem("userInfo", JSON.stringify(state));
     },

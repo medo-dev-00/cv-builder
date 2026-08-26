@@ -12,8 +12,8 @@ import ClassicOne from "@/templates/ClassicOne";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { TemplateType } from "@/lib/features/resumeSlice";
 import BuilderHeader from "@/components/builder/BuilderHeader";
+import { TemplateType } from "@/lib/features/resumeSlice";
 
 // Builder page — form editor, live preview, and PDF export
 
