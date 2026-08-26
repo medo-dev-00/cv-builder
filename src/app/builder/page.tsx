@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 import { FaFileDownload } from "react-icons/fa";
 
-import CVForm from "@/components/CVForm";
+import CVForm from "@/components/builder/CVForm";
 
 import Simple from "@/templates/Simple";
 import Minimalist from "@/templates/Minimalist";
@@ -13,7 +13,7 @@ import ClassicOne from "@/templates/ClassicOne";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { TemplateType } from "@/lib/features/resumeSlice";
-import BuilderHeader from "@/components/BuilderHeader";
+import BuilderHeader from "@/components/builder/BuilderHeader";
 
 // Builder page — form editor, live preview, and PDF export
 

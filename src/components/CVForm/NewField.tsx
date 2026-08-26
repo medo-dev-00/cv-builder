@@ -3,21 +3,17 @@ import {
   updateSection,
   updateSectionBody,
 } from "@/lib/features/resumeSlice";
-import { Dispatch, PayloadAction } from "@reduxjs/toolkit";
 import { useState } from "react";
 import { CgCheck } from "react-icons/cg";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { GoPencil } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
 import { TbTrash } from "react-icons/tb";
+import { useDispatch } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+export default function NewField({ info }: { info: NewSection }) {
+  const dispatch = useDispatch();
 
-export default function NewField({
-  dispatch,
-  info,
-}: {
-  dispatch: Dispatch<PayloadAction<NewSection>>;
-  info: NewSection;
-}) {
   const [showSections, setShowSection] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   // Draft inputs for tag-style skill and language fields
@@ -166,7 +162,7 @@ export default function NewField({
                       dispatch(
                         updateSectionBody({
                           id: info.id,
-                          body: { id: name.id },
+                          body: { id: name.id, name: "" },
                           type: "DELETE",
                         }),
                       );

@@ -3,21 +3,18 @@ import {
   setSkills,
   type Single,
 } from "@/lib/features/resumeSlice";
-import { Dispatch, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "@/lib/store";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import { LuBrain } from "react-icons/lu";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
 // Skill Fields
-export default function Skills({
-  dispatch,
-  skills,
-}: {
-  dispatch: Dispatch<PayloadAction<Single>>;
-  skills: Single[];
-}) {
+export default function Skills({ skills }: { skills: Single[] }) {
+  const dispatch = useDispatch();
+
   const [showSkills, setShowSkills] = useState<boolean>(false);
   const [skill, setSkill] = useState<Single>({ id: uuidv4(), name: "" });
   function createNewSkill(skill: string) {
@@ -59,7 +56,6 @@ export default function Skills({
                 name: e.target.value,
               }))
             }
-           
           />
 
           <button

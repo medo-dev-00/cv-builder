@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { bold } from "next/dist/lib/picocolors";
 
 // --- Types ---
 
@@ -51,7 +50,7 @@ export type ResumeState = {
 
 export type Single = {
   id: string;
-  name?: string;
+  name: string;
 };
 
 export interface NewSection {
@@ -60,6 +59,15 @@ export interface NewSection {
   body: Single[];
 }
 
+export interface NewType extends NewSection {
+  type: "ADD" | "DELETE";
+}
+
+export type Body = {
+  id: string;
+  body: Single;
+  type: "ADD" | "DELETE";
+};
 // --- Initial state ---
 
 const initialState: ResumeState = {
@@ -285,10 +293,7 @@ const resumeSlice = createSlice({
     addMoreSection: (state, action: PayloadAction<NewSection>) => {
       state.moreSections.push(action.payload);
     },
-    updateSection: (
-      state,
-      action: PayloadAction<NewSection & { type: "ADD" | "DELETE" }>,
-    ) => {
+    updateSection: (state, action: PayloadAction<NewType>) => {
       switch (action.payload.type) {
         case "ADD": {
           const section = state.moreSections.find(
@@ -308,31 +313,20 @@ const resumeSlice = createSlice({
         }
       }
     },
-    updateSectionBody: (
-      state,
-      action: PayloadAction<{
-        id: string;
-        body: Single;
-        type: "ADD" | "DELETE";
-      }>,
-    ) => {
-      const { type, id, body } = action.payload;
-      state.moreSections?.forEach((sec) => {
-        switch (type) {
-          case "ADD": {
-            if (sec.id === id) {
-              sec.body.push(body);
-            }
-            break;
-          }
-          case "DELETE": {
-            if (sec.id === id) {
-              sec.body = sec.body.filter((s) => s.id !== body.id);
-              break;
-            }
-          }
-        }
-      });
+    updateSectionBody: (state, action: PayloadAction<Body>) => {
+      const { id, body, type } = action.payload;
+
+      const section = state.moreSections.find((section) => section.id === id);
+
+      if (!section) return;
+
+      if (type === "ADD") {
+        section.body.push(body);
+      }
+
+      if (type === "DELETE") {
+        section.body = section.body.filter((item) => item.id !== body.id);
+      }
     },
   },
 });
