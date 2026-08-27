@@ -13,6 +13,7 @@ import Summary from "../CVForm/Summary";
 import Experience from "../CVForm/Experience";
 import Education from "../CVForm/Education";
 import MoreSections from "../CVForm/MoreSections";
+import Skills from "../CVForm/SkillsField";
 
 // Resume data entry form — dispatches Redux updates and persists to localStorage
 export default function CVForm() {
@@ -140,6 +141,7 @@ export default function CVForm() {
         <Summary />
         <Experience inputClasses={inputClasses} />
         <Education inputClasses={inputClasses} />
+        <Skills />
         <MoreSections />
         <button
           className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-2 border-dashed border-[#B4C5FF] p-1 text-center text-lg font-semibold text-[#004AC6]"

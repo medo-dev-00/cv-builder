@@ -59,10 +59,7 @@ export default function Minimalist({
             (!hidePlaceholders && defaultResume.personalInfo.address)}
         </span>
 
-        {resumeData.personalInfo.address.length > 1 &&
-          resumeData.personalInfo.email && (
-            <span className="h-3 w-px bg-black"></span>
-          )}
+        <span className="h-3 w-[0.8px] bg-gray-900" />
 
         <span
           className={getTextClass(
@@ -74,7 +71,7 @@ export default function Minimalist({
             (!hidePlaceholders && defaultResume.personalInfo.email)}
         </span>
 
-        <span className="h-3 w-px bg-black"></span>
+        <span className="h-3 w-[0.8px] bg-gray-900" />
 
         {(resumeData.personalInfo.website ||
           (!hidePlaceholders && defaultResume.personalInfo.website)) && (

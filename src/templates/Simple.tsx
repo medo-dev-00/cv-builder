@@ -31,13 +31,13 @@ export default function Simple() {
             {personalInfo.address || defaultResume.personalInfo.address}
           </span>
 
-          <span className="size-1.25 rounded-full bg-gray-300" />
+          <span className="h-3 w-[0.8px] bg-gray-900" />
 
           <span className={getTextClass(personalInfo.phone)}>
             {personalInfo.phone || defaultResume.personalInfo.phone}
           </span>
 
-          <span className="size-1.25 rounded-full bg-gray-300" />
+          <span className="h-3 w-[0.8px] bg-gray-900" />
 
           <a
             href={

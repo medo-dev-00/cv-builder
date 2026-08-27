@@ -1,7 +1,6 @@
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 
-
 export default function ClassicOne() {
   const resumeData = useSelector((state: RootState) => state.resume);
   const color = useSelector((state: RootState) => state.resume.color);
@@ -218,18 +217,11 @@ export default function ClassicOne() {
             <li>Technical Skills: React, Next.js, TypeScript</li>
           )}
 
-          {resumeData.moreSections.length > 0 ? (
-            resumeData.moreSections.map((sec) => (
-              <li key={sec.id}>
-                {sec.sectionName}: {sec.body.map((s) => s.name).join(", ")}
-              </li>
-            ))
-          ) : (
-            <>
-              <li>Languages: English, Arabic</li>
-              <li>Certifications: AWS Certified Developer</li>
-            </>
-          )}
+          {resumeData.moreSections.map((sec) => (
+            <li key={sec.id}>
+              {sec.sectionName}: {sec.body.map((s) => s.name).join(", ")}
+            </li>
+          ))}
         </ul>
       </div>
     </div>
